@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaCheckCircle, FaTimesCircle, FaClipboardCheck, FaFilter, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaClipboardCheck, FaFilter, FaPlus, FaTimes, FaDownload } from 'react-icons/fa';
 import { getCollection, setDocument, addDocument } from '../../services/db';
 import { timeSlots } from '../../constants/data';
 import { useForm } from 'react-hook-form';
@@ -131,6 +131,39 @@ _Please arrive 10 minutes before your scheduled time. We wish you good health!_ 
     }
   };
 
+  const exportToCSV = () => {
+    if (appointments.length === 0) {
+      alert("No data to export");
+      return;
+    }
+    const headers = ["Patient Name", "Mobile", "Doctor", "Date", "Time", "Reason", "Status", "Booked By"];
+    const csvRows = [headers.join(',')];
+    
+    // Use the filtered appointments, or all if preferred. Using filtered here.
+    filtered.forEach(apt => {
+      const row = [
+        `"${(apt.patientName || apt.patient || '').replace(/"/g, '""')}"`,
+        `"${(apt.phone || apt.mobile || '').replace(/"/g, '""')}"`,
+        `"${(apt.doctor || '').replace(/"/g, '""')}"`,
+        `"${(apt.date || '').replace(/"/g, '""')}"`,
+        `"${(apt.time || '').replace(/"/g, '""')}"`,
+        `"${(apt.reason || apt.symptoms || '').replace(/"/g, '""')}"`,
+        `"${(apt.status || 'Pending').replace(/"/g, '""')}"`,
+        `"${(apt.bookedBy || 'User').replace(/"/g, '""')}"`
+      ];
+      csvRows.push(row.join(','));
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," + csvRows.join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `appointments_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading && appointments.length === 0) {
     return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
   }
@@ -160,6 +193,13 @@ _Please arrive 10 minutes before your scheduled time. We wish you good health!_ 
             className="flex items-center gap-2 gradient-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition shadow-sm"
           >
             <FaPlus /> Book New
+          </button>
+          <button 
+            onClick={exportToCSV}
+            className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition shadow-sm"
+            title="Export to Excel / CSV"
+          >
+            <FaDownload /> Export
           </button>
         </div>
       </div>

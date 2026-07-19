@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaEnvelopeOpen, FaEnvelope, FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaEnvelopeOpen, FaEnvelope, FaTrash, FaChevronDown, FaChevronUp, FaDownload } from 'react-icons/fa';
 import { getCollection, setDocument, deleteDocument } from '../../services/db';
 
 const subjectColors = { 'General Inquiry': 'bg-blue-100 text-blue-700', 'Child Care': 'bg-amber-100 text-amber-700', Appointment: 'bg-emerald-100 text-emerald-700', Feedback: 'bg-purple-100 text-purple-700', Emergency: 'bg-red-100 text-red-700' };
@@ -45,6 +45,37 @@ export default function ContactEnquiries() {
     }
   };
 
+  const exportToCSV = () => {
+    if (enquiries.length === 0) {
+      alert("No data to export");
+      return;
+    }
+    const headers = ["Name", "Email", "Phone", "Subject", "Date", "Message", "Status"];
+    const csvRows = [headers.join(',')];
+    
+    enquiries.forEach(enq => {
+      const row = [
+        `"${(enq.name || '').replace(/"/g, '""')}"`,
+        `"${(enq.email || '').replace(/"/g, '""')}"`,
+        `"${(enq.phone || '').replace(/"/g, '""')}"`,
+        `"${(enq.subject || '').replace(/"/g, '""')}"`,
+        `"${(enq.date || '').replace(/"/g, '""')}"`,
+        `"${(enq.message || '').replace(/"/g, '""')}"`,
+        `"${enq.read ? 'Read' : 'Unread'}"`
+      ];
+      csvRows.push(row.join(','));
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," + csvRows.join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `enquiries_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const toggleExpand = (id) => { 
     setExpandedId(expandedId === id ? null : id); 
     const enquiry = enquiries.find(e => e.id === id);
@@ -66,6 +97,13 @@ export default function ContactEnquiries() {
           <h2 className="text-xl font-heading font-bold text-slate-800">Contact Enquiries</h2>
           {unreadCount > 0 && <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">{unreadCount} new</span>}
         </div>
+        <button 
+          onClick={exportToCSV}
+          className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition shadow-sm"
+          title="Export to Excel / CSV"
+        >
+          <FaDownload /> Export
+        </button>
       </div>
 
       <div className="space-y-3">
