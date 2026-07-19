@@ -1,38 +1,39 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaWhatsapp, FaTimes } from 'react-icons/fa';
-import { hospitalInfo } from '../../constants/data';
+import { useHospitalInfo } from '../../hooks/useHospitalInfo';
 
 const whatsappOptions = [
   {
     emoji: '📅',
     label: 'Book Appointment',
-    message: 'Hi, I would like to book an appointment.',
+    message: `🏥 *Appointment Request*\n━━━━━━━━━━━━━━━━━━\nHello! I would like to *book an appointment*.\n\nPlease let me know the available slots.\n\n_Thank you!_ 🙏`,
   },
   {
     emoji: '❓',
     label: 'Ask a Question',
-    message: 'Hi, I have a question.',
+    message: `🏥 *General Inquiry*\n━━━━━━━━━━━━━━━━━━\nHello! I have a *question* regarding your services.\n\nCould you please help me?\n\n_Thank you!_ 🙏`,
   },
   {
     emoji: '👶',
     label: 'Child Care Enquiry',
-    message: 'Hi, I need information about child care services.',
+    message: `🏥 *Child Care Enquiry*\n━━━━━━━━━━━━━━━━━━\nHello! I need information about your *Child Care services*.\n\n👶 Could you please share details about:\n• Available pediatric doctors\n• Consultation timings\n• Fee structure\n\n_Thank you!_ 🙏`,
   },
   {
     emoji: '🏥',
     label: 'General Physician',
-    message: 'Hi, I would like to consult a general physician.',
+    message: `🏥 *General Physician Consultation*\n━━━━━━━━━━━━━━━━━━\nHello! I would like to *consult a General Physician*.\n\n🩺 Please share:\n• Available doctors & timings\n• Appointment availability\n• Consultation charges\n\n_Thank you!_ 🙏`,
   },
   {
     emoji: '🚨',
     label: 'Emergency Contact',
-    message: 'Hi, I need emergency assistance.',
+    message: `🚨 *EMERGENCY ASSISTANCE NEEDED*\n━━━━━━━━━━━━━━━━━━\nHello! I need *immediate emergency assistance*.\n\nPlease contact me urgently!\n\n_Thank you!_ 🙏`,
   },
 ];
 
 const WhatsAppFloat = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { info: hospitalInfo } = useHospitalInfo();
 
   const getWhatsAppUrl = (message) =>
     `https://wa.me/${hospitalInfo.whatsapp}?text=${encodeURIComponent(message)}`;

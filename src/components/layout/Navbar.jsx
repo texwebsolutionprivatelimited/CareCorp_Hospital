@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaPhoneAlt, FaAmbulance, FaHospitalAlt } from 'react-icons/fa';
-import { HiMenuAlt3, HiX } from 'react-icons/hi';
-import { hospitalInfo, navLinks } from '../../constants/data';
+import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
+import { hospitalInfo as defaultHospitalInfo, navLinks } from '../../constants/data';
+import { useHospitalInfo } from '../../hooks/useHospitalInfo';
 
 const Navbar = () => {
+  const { info: hospitalInfo } = useHospitalInfo();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedMenu, setExpandedMenu] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,8 +58,9 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Emergency Strip */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-red-600 to-red-700 text-white">
+      <header className="fixed top-0 left-0 right-0 z-50 flex flex-col">
+        {/* Emergency Strip */}
+        <div className="bg-gradient-to-r from-red-600 to-red-700 text-white">
         <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-center gap-4 text-xs sm:text-sm font-medium">
           <span className="flex items-center gap-2">
             <FaAmbulance className="text-sm animate-pulse" />
@@ -71,9 +76,9 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Main Navbar */}
-      <nav
-        className={`fixed top-[34px] sm:top-[36px] left-0 right-0 z-50 transition-all duration-300 ${
+        {/* Main Navbar */}
+        <nav
+          className={`transition-all duration-300 ${
           scrolled
             ? 'bg-white/100 shadow-lg backdrop-blur-sm'
             : 'bg-white/80 backdrop-blur-md'
@@ -85,36 +90,56 @@ const Navbar = () => {
             <Link to="/" className="flex items-center gap-2 group">
               <FaHospitalAlt className="text-2xl text-primary group-hover:scale-110 transition-transform duration-300" />
               <span className="text-xl font-bold font-heading text-primary">
-                CareFirst
+                {hospitalInfo.name?.split(' ')[0] || 'CareFirst'}
               </span>
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  className={({ isActive }) =>
-                    `relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-                      isActive
-                        ? 'text-primary'
-                        : 'text-slate-600 hover:text-primary'
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      {link.name}
-                      {isActive && (
-                        <motion.span
-                          layoutId="navbar-underline"
-                          className="absolute bottom-0 left-4 right-4 h-0.5 bg-primary rounded-full"
-                        />
-                      )}
-                    </>
+                <div key={link.path} className="relative group">
+                  <NavLink
+                    to={link.path}
+                    className={({ isActive }) =>
+                      `relative px-4 py-2 text-sm font-medium transition-colors duration-200 flex items-center gap-1 ${
+                        isActive || (link.subLinks && location.pathname.startsWith(link.path))
+                          ? 'text-primary'
+                          : 'text-slate-600 hover:text-primary'
+                      }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        {link.name}
+                        {link.subLinks && <HiChevronDown className="text-lg transition-transform group-hover:rotate-180" />}
+                        {(isActive || (link.subLinks && location.pathname.startsWith(link.path))) && (
+                          <motion.span
+                            layoutId="navbar-underline"
+                            className="absolute bottom-0 left-4 right-4 h-0.5 bg-primary rounded-full"
+                          />
+                        )}
+                      </>
+                    )}
+                  </NavLink>
+                  
+                  {link.subLinks && (
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 overflow-hidden z-50">
+                      {link.subLinks.map((subLink) => (
+                        <NavLink
+                          key={subLink.path}
+                          to={subLink.path}
+                          className={({ isActive }) =>
+                            `block px-4 py-3 text-sm font-medium transition-colors ${
+                              isActive ? 'bg-primary/10 text-primary' : 'text-slate-600 hover:bg-slate-50 hover:text-primary'
+                            }`
+                          }
+                        >
+                          {subLink.name}
+                        </NavLink>
+                      ))}
+                    </div>
                   )}
-                </NavLink>
+                </div>
               ))}
             </div>
 
@@ -139,6 +164,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+      </header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -170,7 +196,7 @@ const Navbar = () => {
                 >
                   <FaHospitalAlt className="text-xl text-primary" />
                   <span className="text-lg font-bold font-heading text-primary">
-                    CareFirst
+                    {hospitalInfo.name?.split(' ')[0] || 'CareFirst'}
                   </span>
                 </Link>
                 <button
@@ -192,20 +218,64 @@ const Navbar = () => {
                       variants={itemVariants}
                       initial="hidden"
                       animate="visible"
+                      className="space-y-1"
                     >
-                      <NavLink
-                        to={link.path}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={({ isActive }) =>
-                          `block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                            isActive
-                              ? 'bg-primary/10 text-primary font-semibold'
-                              : 'text-slate-600 hover:bg-slate-50 hover:text-primary'
-                          }`
-                        }
-                      >
-                        {link.name}
-                      </NavLink>
+                      {link.subLinks ? (
+                        <>
+                          <div
+                            onClick={() => setExpandedMenu(expandedMenu === link.name ? null : link.name)}
+                            className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium cursor-pointer transition-all duration-200 ${
+                              location.pathname.startsWith(link.path) || expandedMenu === link.name
+                                ? 'bg-primary/5 text-primary' 
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-primary'
+                            }`}
+                          >
+                            <span>{link.name}</span>
+                            <HiChevronDown className={`transition-transform duration-300 ${expandedMenu === link.name ? 'rotate-180' : ''}`} />
+                          </div>
+                          <AnimatePresence>
+                            {expandedMenu === link.name && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="overflow-hidden pl-4 space-y-1"
+                              >
+                                {link.subLinks.map((subLink) => (
+                                  <NavLink
+                                    key={subLink.path}
+                                    to={subLink.path}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={({ isActive }) =>
+                                      `block px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                                        isActive
+                                          ? 'bg-primary/10 text-primary font-semibold'
+                                          : 'text-slate-500 hover:bg-slate-50 hover:text-primary'
+                                      }`
+                                    }
+                                  >
+                                    {subLink.name}
+                                  </NavLink>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </>
+                      ) : (
+                        <NavLink
+                          to={link.path}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={({ isActive }) =>
+                            `block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                              isActive
+                                ? 'bg-primary/10 text-primary font-semibold'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-primary'
+                            }`
+                          }
+                        >
+                          {link.name}
+                        </NavLink>
+                      )}
                     </motion.div>
                   ))}
                 </div>

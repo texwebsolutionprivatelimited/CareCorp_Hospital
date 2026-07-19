@@ -12,18 +12,41 @@ export const hospitalInfo = {
     emergency: 'Emergency: 24/7 Available',
   },
   mapUrl: 'https://maps.google.com/maps?q=Piplani%20Petrol%20Pump,%20Sonagiri,%20Bhopal&t=&z=15&ie=UTF8&iwloc=&output=embed',
+  waConfirmTemplate: `🏥 *{hospitalName}*
+━━━━━━━━━━━━━━━━━━
+🎉 *APPOINTMENT CONFIRMED*
+━━━━━━━━━━━━━━━━━━
+
+Dear *{patientName}*,
+
+Your appointment has been successfully booked and confirmed. Please find the details below:
+
+🩺 *Doctor:* {doctor}
+📅 *Date:* {date}
+🕐 *Time:* {time}
+{reason}
+━━━━━━━━━━━━━━━━━━
+📍 *Address:* {address}
+📞 *Help Desk:* {phone}
+━━━━━━━━━━━━━━━━━━
+_Please arrive 10 minutes before your scheduled time. We wish you good health!_ 🙏`,
 };
 
 export const navLinks = [
   { name: 'Home', path: '/' },
-  { name: 'About', path: '#' },
-  { name: 'Doctors', path: '#' },
-  { name: 'Services', path: '#' },
-  { name: 'Gallery', path: '#' },
-  { name: 'Blog', path: '#' },
-  { name: 'Testimonials', path: '#' },
-  { name: 'FAQ', path: '#' },
-  { name: 'Contact', path: '#' },
+  { name: 'About', path: '/about' },
+  { name: 'Doctors', path: '/doctors' },
+  { 
+    name: 'Services', 
+    path: '/services',
+    subLinks: [
+      { name: 'General Physician', path: '/services/general-physician' },
+      { name: 'Child Care', path: '/services/child-care' }
+    ]
+  },
+  { name: 'Gallery', path: '/gallery' },
+  { name: 'Blog', path: '/blog' },
+  { name: 'Contact', path: '/contact' },
 ];
 
 export const generalPhysicianServices = [
@@ -400,16 +423,29 @@ export const sampleBlogs = [
 ];
 
 export const sampleGallery = [
-  { id: 1, category: 'Hospital', caption: 'Hospital Reception Area', gradient: 'from-teal-400 to-teal-600' },
-  { id: 2, category: 'Facilities', caption: 'Modern Consultation Room', gradient: 'from-blue-400 to-blue-600' },
-  { id: 3, category: 'Hospital', caption: 'Waiting Lounge', gradient: 'from-emerald-400 to-emerald-600' },
-  { id: 4, category: 'Facilities', caption: 'Pediatric Care Unit', gradient: 'from-amber-400 to-amber-600' },
-  { id: 5, category: 'Doctors', caption: 'Our Medical Team', gradient: 'from-indigo-400 to-indigo-600' },
-  { id: 6, category: 'Events', caption: 'Health Camp 2024', gradient: 'from-pink-400 to-pink-600' },
-  { id: 7, category: 'Facilities', caption: 'Diagnostic Laboratory', gradient: 'from-purple-400 to-purple-600' },
-  { id: 8, category: 'Hospital', caption: 'Hospital Entrance', gradient: 'from-cyan-400 to-cyan-600' },
-  { id: 9, category: 'Events', caption: 'Vaccination Drive', gradient: 'from-rose-400 to-rose-600' },
-  { id: 10, category: 'Doctors', caption: 'Doctor Consultation', gradient: 'from-teal-500 to-emerald-600' },
-  { id: 11, category: 'Facilities', caption: 'Pharmacy', gradient: 'from-sky-400 to-sky-600' },
-  { id: 12, category: 'Events', caption: 'Community Health Talk', gradient: 'from-orange-400 to-orange-600' },
+  { id: 'gal-1', caption: 'Modern Hospital Building', category: 'Hospital', imageUrl: '/images/gallery/building.jpg' },
+  { id: 'gal-2', caption: 'Main Entrance', category: 'Hospital', imageUrl: '/images/gallery/hospital_entrance.jpg' },
+  { id: 'gal-3', caption: '24/7 Reception', category: 'Hospital', imageUrl: '/images/gallery/reception.jpg' },
+  { id: 'gal-4', caption: 'Waiting Lounge', category: 'Hospital', imageUrl: '/images/gallery/waiting_lounge.jpg' },
+  { id: 'gal-5', caption: 'Patient Waiting Area', category: 'Hospital', imageUrl: '/images/gallery/waiting.jpg' },
+  { id: 'gal-6', caption: 'Comfortable Patient Room', category: 'Hospital', imageUrl: '/images/gallery/room.jpg' },
+  { id: 'gal-7', caption: 'Consultation Room', category: 'Hospital', imageUrl: '/images/gallery/consultation_room.jpg' },
+  { id: 'gal-8', caption: 'Pediatric Ward', category: 'Hospital', imageUrl: '/images/gallery/pediatric.jpg' },
+  { id: 'gal-9', caption: 'Operation Theater', category: 'Facilities', imageUrl: '/images/gallery/ot.jpg' },
+  { id: 'gal-10', caption: 'MRI Scanning Room', category: 'Facilities', imageUrl: '/images/gallery/mri.jpg' },
+  { id: 'gal-11', caption: 'Advanced Pathology Lab', category: 'Facilities', imageUrl: '/images/gallery/lab.jpg' },
+  { id: 'gal-12', caption: 'Diagnostic Lab', category: 'Facilities', imageUrl: '/images/gallery/diagnostic_lab.jpg' },
+  { id: 'gal-13', caption: '24/7 Pharmacy', category: 'Facilities', imageUrl: '/images/gallery/pharmacy.jpg' },
+  { id: 'gal-14', caption: 'Emergency Ambulance', category: 'Facilities', imageUrl: '/images/gallery/ambulance.jpg' },
+  { id: 'gal-15', caption: 'Annual Health Camp', category: 'Events', imageUrl: '/images/gallery/health_camp.jpg' },
+  { id: 'gal-16', caption: 'Blood Donation Drive', category: 'Events', imageUrl: '/images/gallery/blood_donation.jpg' },
+  { id: 'gal-17', caption: 'Child Vaccination Camp', category: 'Events', imageUrl: '/images/gallery/vaccination.jpg' },
+  { id: 'gal-18', caption: 'Polio Eradication Camp', category: 'Events', imageUrl: '/images/gallery/polio_camp.jpg' },
+  { id: 'gal-19', caption: 'Medical Seminar', category: 'Events', imageUrl: '/images/gallery/seminar.jpg' },
+];
+
+export const sampleEnquiries = [
+  { id: 'enq-1', name: 'Amit Patel', email: 'amit@example.com', phone: '9876543210', subject: 'General Inquiry', message: 'I want to know about the hospital timings.', read: false, date: '2024-12-21' },
+  { id: 'enq-2', name: 'Sneha Gupta', email: 'sneha@example.com', phone: '9876543211', subject: 'Appointment', message: 'I need an appointment with Dr. Rajesh Sharma.', read: false, date: '2024-12-21' },
+  { id: 'enq-3', name: 'Rahul Verma', email: 'rahul@example.com', phone: '9876543212', subject: 'Emergency', message: 'Do you have an ambulance service available 24/7?', read: true, date: '2024-12-20' }
 ];

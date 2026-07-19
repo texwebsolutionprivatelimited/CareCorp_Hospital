@@ -4,19 +4,24 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import WhatsAppFloat from './components/layout/WhatsAppFloat';
 import ScrollToTop from './components/layout/ScrollToTop';
+import InitialPopup from './components/layout/InitialPopup';
+import { useHospitalInfo } from './hooks/useHospitalInfo';
+import MaintenancePage from './pages/main/MaintenancePage';
 
-const Home = lazy(() => import('./pages/Home'));
-const About = lazy(() => import('./pages/About'));
-const Doctors = lazy(() => import('./pages/Doctors'));
-const Services = lazy(() => import('./pages/Services'));
-const Appointment = lazy(() => import('./pages/Appointment'));
-const Blog = lazy(() => import('./pages/Blog'));
-const BlogPost = lazy(() => import('./pages/BlogPost'));
-const Gallery = lazy(() => import('./pages/Gallery'));
-const Testimonials = lazy(() => import('./pages/Testimonials'));
-const FAQ = lazy(() => import('./pages/FAQ'));
-const Contact = lazy(() => import('./pages/Contact'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+const Home = lazy(() => import('./pages/main/Home'));
+const About = lazy(() => import('./pages/main/About'));
+const Doctors = lazy(() => import('./pages/main/Doctors'));
+const Services = lazy(() => import('./pages/main/Services'));
+const GeneralPhysician = lazy(() => import('./pages/main/GeneralPhysician'));
+const ChildCare = lazy(() => import('./pages/main/ChildCare'));
+const Appointment = lazy(() => import('./pages/main/Appointment'));
+const Blog = lazy(() => import('./pages/main/Blog'));
+const BlogPost = lazy(() => import('./pages/main/BlogPost'));
+const Gallery = lazy(() => import('./pages/main/Gallery'));
+const Testimonials = lazy(() => import('./pages/main/Testimonials'));
+const FAQ = lazy(() => import('./pages/main/FAQ'));
+const Contact = lazy(() => import('./pages/main/Contact'));
+const NotFound = lazy(() => import('./pages/main/NotFound'));
 
 const AdminLogin = lazy(() => import('./pages/admin/Login'));
 const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
@@ -27,6 +32,7 @@ const AdminBlogs = lazy(() => import('./pages/admin/BlogManagement'));
 const AdminGallery = lazy(() => import('./pages/admin/GalleryManagement'));
 const AdminTestimonials = lazy(() => import('./pages/admin/TestimonialManagement'));
 const AdminEnquiries = lazy(() => import('./pages/admin/ContactEnquiries'));
+const AdminSettings = lazy(() => import('./pages/admin/HospitalSettings'));
 
 function LoadingSpinner() {
   return (
@@ -40,9 +46,17 @@ function LoadingSpinner() {
 }
 
 function PublicLayout() {
+  const { info, loading } = useHospitalInfo();
+
+  // Show maintenance page to all visitors when enabled
+  if (!loading && info.maintenanceMode) {
+    return <MaintenancePage />;
+  }
+
   return (
     <>
       <Navbar />
+      <InitialPopup />
       <main className="min-h-screen">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
@@ -50,6 +64,8 @@ function PublicLayout() {
             <Route path="/about" element={<About />} />
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/services/general-physician" element={<GeneralPhysician />} />
+            <Route path="/services/child-care" element={<ChildCare />} />
             <Route path="/appointment" element={<Appointment />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
@@ -84,6 +100,7 @@ export default function App() {
                 <Route path="/gallery" element={<AdminGallery />} />
                 <Route path="/testimonials" element={<AdminTestimonials />} />
                 <Route path="/enquiries" element={<AdminEnquiries />} />
+                <Route path="/settings" element={<AdminSettings />} />
               </Routes>
             </AdminLayout>
           } />

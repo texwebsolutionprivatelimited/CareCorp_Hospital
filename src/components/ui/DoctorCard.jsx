@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaUserMd, FaBriefcase, FaClock, FaGlobe } from 'react-icons/fa';
+import { FaUserMd, FaBriefcase, FaClock, FaGlobe, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 const DoctorCard = ({ doctor }) => {
-  const { name, qualification, specialization, experience, timing, languages, about, image } = doctor;
+  const { name, qualification, specialization, experience, timing, languages, about, image, isAvailable, availabilityStatus } = doctor;
+  
+  // Default to true if not set
+  const currentlyAvailable = isAvailable !== false;
 
   return (
     <motion.div
@@ -12,16 +15,32 @@ const DoctorCard = ({ doctor }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-100 flex flex-col h-full"
+      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-100 flex flex-col h-full relative"
     >
       {/* Top gradient section */}
       <div className="gradient-primary h-48 flex items-center justify-center relative shrink-0">
+        
+        {/* Availability Badge */}
+        <div className="absolute top-4 right-4 z-20">
+          {currentlyAvailable ? (
+            <span className="flex items-center gap-1.5 bg-green-500/90 backdrop-blur text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+              Available
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 bg-red-500/90 backdrop-blur text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+              <FaExclamationTriangle className="text-[10px]" />
+              {availabilityStatus || 'Unavailable'}
+            </span>
+          )}
+        </div>
+
         {/* Doctor avatar */}
         {image ? (
           <img 
             src={image} 
             alt={name} 
-            className="w-28 h-28 rounded-full object-cover border-4 border-white/20 shadow-lg z-10"
+            className={`w-28 h-28 rounded-full object-cover border-4 border-white/20 shadow-lg z-10 ${!currentlyAvailable ? 'grayscale opacity-80' : ''}`}
           />
         ) : (
           <div className="w-28 h-28 rounded-full bg-white/20 flex items-center justify-center border-4 border-white/20 shadow-lg z-10">
@@ -53,20 +72,20 @@ const DoctorCard = ({ doctor }) => {
           </div>
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <FaClock className="text-primary flex-shrink-0" />
-            <span>{timing}</span>
+            <span>{Array.isArray(timing) ? timing.join(' | ') : timing || 'Not specified'}</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <FaGlobe className="text-primary flex-shrink-0" />
-            <span>{languages.join(', ')}</span>
+            <span>{Array.isArray(languages) ? languages.join(', ') : languages || 'Not specified'}</span>
           </div>
         </div>
 
         {/* Book Appointment CTA */}
         <Link
-          to="/appointment"
-          className="block w-full text-center gradient-primary text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity duration-300 mt-4"
+          to={`/appointment?doctor=${encodeURIComponent(name || '')}`}
+          className={`block w-full text-center text-white py-3 rounded-xl font-semibold transition-opacity duration-300 mt-4 ${currentlyAvailable ? 'gradient-primary hover:opacity-90' : 'bg-slate-300 hover:bg-slate-400 text-slate-600'}`}
         >
-          Book Appointment
+          {currentlyAvailable ? 'Book Appointment' : 'Book for Future'}
         </Link>
       </div>
     </motion.div>
