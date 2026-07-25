@@ -212,25 +212,53 @@ export default function About() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {[
-            { icon: <FaStethoscope />, title: "Expert Consultations", desc: "Highly skilled doctors and super-specialists across all key medical departments." },
-            { icon: <FaUsers />, title: "Experienced Panel", desc: "Top-tier surgeons, consultants, and intensive care specialists with extensive medical experience." },
-            { icon: <FaHeartbeat />, title: "Advanced Diagnostics", desc: "Ultra-modern labs, fully functional radiology setups, CT scan, and point-of-care tests." },
-            { icon: <FaAmbulance />, title: "24/7 Trauma & Emergency", desc: "Rapid ambulance transport service with life support systems ready round-the-clock." },
-            { icon: <FaBriefcase />, title: "Post-Op Rehab Desk", desc: "Robust physical therapy, dedicated monitoring setups, and streamlined regular follow-ups." },
-            { icon: <FaWallet />, title: "Affordable Care Packages", desc: "Transparent billing models and fair costs for medical procedures and tests." },
-            { icon: <FaUserCheck />, title: "Compassionate Nursing", desc: "Thoroughly professional nursing staff providing compassionate post-surgical patient care." },
-            { icon: <FaHospital />, title: "Cashless & Health Panels", desc: "Seamless corporate tie-ups, major TPA integrations, and Ayushman Bharat / government scheme access." },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="bg-white p-6 rounded-2xl shadow-md border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-4 text-xl">{item.icon}</div>
-              <h4 className="font-semibold text-slate-800 text-base mb-1">{item.title}</h4>
-              <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
-            </motion.div>
-          ))}
+            { icon: <FaStethoscope />, title: "Expert Consultations", desc: "Highly skilled doctors and super-specialists across all key medical departments.", image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800&auto=format&fit=crop" },
+            { icon: <FaUsers />, title: "Experienced Panel", desc: "Top-tier surgeons, consultants, and intensive care specialists with extensive medical experience.", image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=800&auto=format&fit=crop" },
+            { icon: <FaHeartbeat />, title: "Advanced Diagnostics", desc: "Ultra-modern labs, fully functional radiology setups, CT scan, and point-of-care tests.", image: "https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=800&auto=format&fit=crop" },
+            { icon: <FaAmbulance />, title: "24/7 Trauma & Emergency", desc: "Rapid ambulance transport service with life support systems ready round-the-clock.", image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=800&auto=format&fit=crop" },
+            { icon: <FaBriefcase />, title: "Post-Op Rehab Desk", desc: "Robust physical therapy, dedicated monitoring setups, and streamlined regular follow-ups.", image: "https://images.unsplash.com/photo-1579684453423-f84349ef60b0?q=80&w=800&auto=format&fit=crop" },
+            { icon: <FaWallet />, title: "Affordable Care Packages", desc: "Transparent billing models and fair costs for medical procedures and tests.", image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=800&auto=format&fit=crop" },
+            { icon: <FaUserCheck />, title: "Compassionate Nursing", desc: "Thoroughly professional nursing staff providing compassionate post-surgical patient care.", image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=800&auto=format&fit=crop" },
+            { icon: <FaHospital />, title: "Cashless & Health Panels", desc: "Seamless corporate tie-ups, major TPA integrations, and Ayushman Bharat / government scheme access.", image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800&auto=format&fit=crop" },
+          ].map((item, index) => {
+            const hasImage = Boolean(item.image);
+
+            return (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className={`group relative overflow-hidden rounded-2xl p-6 shadow-md border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 min-h-[220px] ${
+                  hasImage ? 'text-white' : 'bg-white'
+                }`}
+              >
+                {hasImage && (
+                  <>
+                    <div
+                      className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-500 group-hover:scale-110 blur-[1px]"
+                      style={{ backgroundImage: `url(${item.image})`, filter: 'saturate(0.9) contrast(0.95)' }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/45 to-slate-900/20" />
+                  </>
+                )}
+
+                <div className="relative z-10">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-xl ${
+                    hasImage
+                      ? 'bg-white/20 backdrop-blur-sm text-white border border-white/20'
+                      : 'bg-primary/10 text-primary'
+                  }`}>
+                    {item.icon}
+                  </div>
+                  <h4 className={`font-semibold text-base mb-1 ${hasImage ? 'text-white' : 'text-slate-800'}`}>
+                    {item.title}
+                  </h4>
+                  <p className={`text-xs leading-relaxed ${hasImage ? 'text-slate-200' : 'text-slate-500'}`}>
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </section>
 
@@ -299,16 +327,23 @@ export default function About() {
       </section>
 
       {/* 7. Assistance Available & Helpline */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
+      <section className="max-w-6xl mx-auto px-4 py-8 md:py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-8"
         >
-          <span className="text-xs font-bold border-l-4 pl-2 uppercase block mb-2">Support</span>
-          <h2 className="text-2xl font-bold text-slate-900">HEALTHCARE HELPDESK</h2>
-          <p className="text-sm text-slate-500 mt-1">Our customer experience unit is focused on managing seamless patient admission and checkup routes. Contact our medical desks directly.</p>
+          <span className="text-xs font-bold border-l-4 pl-2 uppercase block mb-2">
+            Support
+          </span>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900">
+            HEALTHCARE HELPDESK
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Our customer experience unit is focused on managing seamless patient
+            admission and checkup routes. Contact our medical desks directly.
+          </p>
         </motion.div>
 
         <motion.div
@@ -318,52 +353,65 @@ export default function About() {
           viewport={{ once: true }}
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12"
         >
-          {["OPD & Emergency Consultation",
+          {[
+            "OPD & Emergency Consultation",
             "Multi-Specialty Surgeon Booking",
             "Cashless TPA & Corporate Claims",
             "Ayushman Bharat Scheme Support",
-            "Diagnostics & Pathology Tracking"
-          ]
-            .map((help, idx) => (
-              <motion.div key={idx} variants={itemVariants} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3 text-sm font-medium text-slate-700">
-                <span className="w-2 h-2 rounded-full bg-primary"></span> {help}
-              </motion.div>
-            ))}
+            "Diagnostics & Pathology Tracking",
+          ].map((help, idx) => (
+            <motion.div
+              key={idx}
+              variants={itemVariants}
+              className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3 text-sm font-medium text-slate-700"
+            >
+              <span className="w-2 h-2 rounded-full bg-primary shrink-0"></span> {help}
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* Admissions Contact Footer Block */}
-        <div className='w-[70%] mx-auto '>
+        {/* UPDATE: Mobile ke liye w-full aur desktop ke liye w-full lg:w-[85%] ya w-[70%] rakha gaya hai */}
+        <div className="w-full lg:w-[80%] mx-auto">
           <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="bg-gradient-to-r from-purple-900 to-slate-950 text-white p-8 rounded-3xl shadow-xl"
-        >
-          <h3 className="text-xl font-bold mb-2 tracking-wide">PATIENT APPOINTMENTS HELPLINE</h3>
-          <p className="text-xs text-purple-200 mb-6">Planning a health screening or critical consultation? Connect with our desk right away or drop by our admission counter.</p>
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-gradient-to-r from-purple-900 to-slate-950 text-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl"
+          >
+            <h3 className="text-lg sm:text-xl font-bold mb-2 tracking-wide">
+              PATIENT APPOINTMENTS HELPLINE
+            </h3>
+            <p className="text-xs text-purple-200 mb-6">
+              Planning a health screening or critical consultation? Connect with our
+              desk right away or drop by our admission counter.
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm mb-6 border-b border-purple-800 pb-6">
-            <div className="flex items-center gap-3">
-              <FaPhoneAlt className="text-amber-400 shrink-0" />
-              <span>+91 8423193193</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-xs sm:text-sm mb-6 border-b border-purple-800 pb-6">
+              <div className="flex items-center gap-3 break-all sm:break-normal">
+                <FaPhoneAlt className="text-amber-400 shrink-0 text-base" />
+                <span>+91 8423193193</span>
+              </div>
+              <div className="flex items-center gap-3 break-all">
+                <FaEnvelope className="text-amber-400 shrink-0 text-base" />
+                <span>deepakn7267@gmail.com</span>
+              </div>
+              <div className="flex items-start md:items-center gap-3">
+                <FaMapMarkerAlt className="text-amber-400 shrink-0 text-base mt-0.5 md:mt-0" />
+                <span>
+                  AIIMS Gorakhpur ( Kunraghat, Gorakhpur Uttar Pradesh, 273008 )
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <FaEnvelope className="text-amber-400 shrink-0" />
-              <span>deepakn7267@gmail.com</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <FaMapMarkerAlt className="text-amber-400 shrink-0" />
-              <span>AIIMS Gorakhpur ( Kunraghat, Gorakhpur Uttar Pradesh, 273008 )</span>
-            </div>
-          </div>
 
-          <button className="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl transition duration-300 text-sm tracking-wider uppercase shadow-md">
-            <a href='/Appointment'>
-              BOOK AN APPOINTMENT
+            {/* Button link wrapping problem solved */}
+            <a href="/Appointment" className="block w-full">
+              <button className="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 px-4 rounded-xl transition duration-300 text-xs sm:text-sm tracking-wider uppercase shadow-md">
+                BOOK AN APPOINTMENT
+              </button>
             </a>
-          </button>
-        </motion.div>
+          </motion.div>
         </div>
       </section>
     </div>

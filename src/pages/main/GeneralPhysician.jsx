@@ -97,7 +97,7 @@ export default function GeneralPhysician() {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/70" />
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -112,15 +112,15 @@ export default function GeneralPhysician() {
 
       {/* Main Container Section */}
       <section className="relative overflow-hidden pt-10 pb-24 bg-gradient-to-b from-cyan-50/60 via-white to-slate-50">
-        
+
         {/* Soft Ambient Background Elements */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-200/30 rounded-full blur-3xl -z-10 animate-pulse duration-[8000ms]" />
         <div className="absolute top-1/4 left-10 w-80 h-80 bg-blue-100/40 rounded-full blur-3xl -z-10" />
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          
+
           {/* Header Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -145,7 +145,7 @@ export default function GeneralPhysician() {
           </motion.div>
 
           {/* Cards Grid with Staggered Fade-in */}
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -194,10 +194,10 @@ export default function GeneralPhysician() {
                 {/* Bottom CTA Button */}
                 <div className="p-6 pt-0">
                   <a href="/Appointment">
-                  <button className="w-full py-3 px-4 rounded-xl bg-slate-50 text-slate-700 font-semibold text-sm transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-md flex items-center justify-center gap-2 cursor-pointer">
-                    <span>Book Appointment</span>
-                    <FaArrowRight className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
-                  </button>
+                    <button className="w-full py-3 px-4 rounded-xl bg-slate-50 text-slate-700 font-semibold text-sm transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                      <span>Book Appointment</span>
+                      <FaArrowRight className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
+                    </button>
                   </a>
                 </div>
               </motion.div>
@@ -205,7 +205,7 @@ export default function GeneralPhysician() {
           </motion.div>
 
           {/* Bottom Trust Badge Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -213,9 +213,9 @@ export default function GeneralPhysician() {
             className="mt-24 relative rounded-3xl overflow-hidden border border-slate-100 bg-white shadow-xl shadow-slate-200/50 p-8 sm:p-12"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-50/30 to-blue-50/20 pointer-events-none" />
-            
+
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12 division-x division-slate-100">
-              
+
               <div className="flex flex-col items-center text-center space-y-3 group">
                 <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-3xl shadow-inner transition-transform duration-300 group-hover:scale-110">
                   <FaUserMd />
@@ -260,7 +260,7 @@ export default function GeneralPhysician() {
             subtitle="Expert healthcare for adults."
           />
 
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -270,9 +270,11 @@ export default function GeneralPhysician() {
             {generalPhysicianServices.map((service, index) => (
               <motion.div key={service.id || index} variants={fadeInUp}>
                 <ServiceCard
+                  key={service.id}
                   title={service.title}
                   description={service.description}
                   icon={service.icon}
+                  image={service.image}
                   index={index}
                   variant="general"
                 />
