@@ -76,10 +76,23 @@ const stagger = {
 
 const Home = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   
   const [doctors, setDoctors] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [blogs, setBlogs] = useState([]);
+
+  const handleCarouselInteractionStart = () => {
+    if (window.innerWidth < 768) {
+      setIsCarouselPaused(true);
+    }
+  };
+
+  const handleCarouselInteractionEnd = () => {
+    if (window.innerWidth < 768) {
+      window.setTimeout(() => setIsCarouselPaused(false), 900);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -401,7 +414,14 @@ const Home = () => {
             <div className="absolute top-0 right-0 w-8 md:w-24 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
             
             {/* Sliding track */}
-            <div className="flex gap-8 w-max animate-scroll">
+            <div
+              className={`flex gap-8 w-max animate-scroll ${isCarouselPaused ? 'paused' : ''}`}
+              onPointerDown={handleCarouselInteractionStart}
+              onPointerUp={handleCarouselInteractionEnd}
+              onPointerLeave={handleCarouselInteractionEnd}
+              onTouchStart={handleCarouselInteractionStart}
+              onTouchEnd={handleCarouselInteractionEnd}
+            >
               {/* Duplicate the array to create an infinite loop effect */}
               {[...doctors, ...doctors].map((doctor, idx) => (
                 <div key={`${doctor.id}-${idx}`} className="w-[320px] md:w-[350px] shrink-0">

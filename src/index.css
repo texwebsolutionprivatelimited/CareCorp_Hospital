@@ -159,7 +159,11 @@ h1, h2, h3, h4, h5, h6 {
   animation: scroll 40s linear infinite;
 }
 
-/* Only pause on hover for devices with true hover capability (desktop) */
+/* Pause on hover for desktop, and on tap/interaction for mobile */
+.animate-scroll.paused {
+  animation-play-state: paused;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .animate-scroll:hover {
     animation-play-state: paused;
