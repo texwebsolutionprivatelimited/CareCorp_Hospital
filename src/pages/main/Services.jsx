@@ -71,7 +71,7 @@ export default function Services() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm md:text-base transition-all duration-300 ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm md:text-base transition-all duration-300 cursor-pointer ${
                   activeTab === tab.id
                     ? 'gradient-primary text-white shadow-lg scale-105'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -97,6 +97,7 @@ export default function Services() {
                 title={service.title}
                 description={service.description}
                 icon={service.icon}
+                image={service.image}
                 index={index}
                 variant={variant}
               />

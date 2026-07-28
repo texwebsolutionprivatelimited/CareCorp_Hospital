@@ -42,7 +42,7 @@ export default function HealthCheckup() {
               transition={{ duration: 0.5 }}
               className="max-w-2xl"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur mt-5">
                 <FaHeartbeat className="text-teal-300" />
                 Preventive Care Made Simple
               </div>
