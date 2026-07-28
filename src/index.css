@@ -159,8 +159,11 @@ h1, h2, h3, h4, h5, h6 {
   animation: scroll 40s linear infinite;
 }
 
-.animate-scroll:hover {
-  animation-play-state: paused;
+/* Only pause on hover for devices with true hover capability (desktop) */
+@media (hover: hover) and (pointer: fine) {
+  .animate-scroll:hover {
+    animation-play-state: paused;
+  }
 }
 
 /* ===== Loading Skeleton ===== */

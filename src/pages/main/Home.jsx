@@ -448,6 +448,7 @@ const Home = () => {
                 title={service.title}
                 description={service.description}
                 icon={service.icon}
+                image={service.image}
                 index={index}
                 variant="general"
               />
@@ -473,6 +474,7 @@ const Home = () => {
                 title={service.title}
                 description={service.description}
                 icon={service.icon}
+                image={service.image}
                 index={index}
                 variant="childcare"
               />
@@ -500,6 +502,8 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
             {whyChooseUs.map((item, index) => {
               const IconComp = whyChooseIconMap[item.icon] || FaHeartbeat;
+              const hasImage = Boolean(item.image);
+
               return (
                 <motion.div
                   key={index}
@@ -507,17 +511,37 @@ const Home = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 group"
+                  className={`relative overflow-hidden rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 group min-h-[220px] ${
+                    hasImage ? 'text-white' : 'bg-white'
+                  }`}
                 >
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <IconComp className="text-2xl text-primary" />
+                  {hasImage && (
+                    <>
+                      <div
+                        className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-500 group-hover:scale-110 blur-[1px]"
+                        style={{ backgroundImage: `url(${item.image})`, filter: 'saturate(0.9) contrast(0.95)' }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/45 to-slate-900/20" />
+                    </>
+                  )}
+
+                  <div className="relative z-10">
+                    <div
+                      className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 ${
+                        hasImage
+                          ? 'bg-white/20 backdrop-blur-sm text-white border border-white/20'
+                          : 'bg-primary/10 text-primary'
+                      }`}
+                    >
+                      <IconComp className="text-2xl" />
+                    </div>
+                    <h3 className={`font-heading font-semibold text-lg mb-2 ${hasImage ? 'text-white' : 'text-slate-800'}`}>
+                      {item.title}
+                    </h3>
+                    <p className={`text-sm leading-relaxed ${hasImage ? 'text-slate-200' : 'text-slate-600'}`}>
+                      {item.description}
+                    </p>
                   </div>
-                  <h3 className="font-heading font-semibold text-lg text-slate-800 mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    {item.description}
-                  </p>
                 </motion.div>
               );
             })}

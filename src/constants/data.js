@@ -55,48 +55,56 @@ export const generalPhysicianServices = [
     title: 'Fever Treatment',
     description: 'Expert diagnosis and treatment for all types of fevers including viral, bacterial, and tropical fevers with comprehensive care.',
     icon: 'FaThermometerHalf',
+    image: 'https://ik.imagekit.io/bumvzsaaz/pexels-shvetsa-3683045.jpg?updatedAt=1784341887454',
   },
   {
     id: 'viral-infection',
     title: 'Viral Infection',
     description: 'Specialized treatment for viral infections including flu, dengue, chikungunya, and other seasonal viral diseases.',
     icon: 'FaVirus',
+    image: 'https://ik.imagekit.io/bumvzsaaz/photo-1584036561566-baf8f5f1b144.avif',
   },
   {
     id: 'diabetes-management',
     title: 'Diabetes Management',
     description: 'Comprehensive diabetes care including blood sugar monitoring, medication management, and lifestyle counseling.',
     icon: 'FaTint',
+    image: 'https://ik.imagekit.io/bumvzsaaz/pexels-polina-tankilevitch-3873140.jpg?updatedAt=1784341871036',
   },
   {
     id: 'blood-pressure',
     title: 'Blood Pressure Management',
     description: 'Expert monitoring and management of hypertension with personalized treatment plans and regular follow-ups.',
     icon: 'FaHeartbeat',
+    image: 'https://ik.imagekit.io/bumvzsaaz/photo-1576091160399-112ba8d25d1d.avif',
   },
   {
     id: 'health-checkup',
     title: 'Health Check-up',
     description: 'Complete health screening packages including blood tests, ECG, and comprehensive physical examination.',
     icon: 'FaStethoscope',
+    image: 'https://ik.imagekit.io/bumvzsaaz/photo-1629909613654-28e377c37b09.avif',
   },
   {
     id: 'thyroid-consultation',
     title: 'Thyroid Consultation',
     description: 'Diagnosis and treatment of thyroid disorders including hypothyroidism, hyperthyroidism, and thyroid nodules.',
     icon: 'FaClinicMedical',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Health-image-2.jpeg?updatedAt=1782724056979',
   },
   {
     id: 'allergy-treatment',
     title: 'Allergy Treatment',
     description: 'Identification and treatment of allergies including skin allergies, food allergies, and respiratory allergies.',
     icon: 'FaAllergies',
+    image: 'https://ik.imagekit.io/bumvzsaaz/images.jpeg?updatedAt=1783140073728',
   },
   {
     id: 'lifestyle-consultation',
     title: 'Lifestyle Consultation',
     description: 'Personalized guidance on diet, exercise, stress management, and healthy living for disease prevention.',
     icon: 'FaAppleAlt',
+    image: 'https://ik.imagekit.io/bumvzsaaz/photo-1498837167922-ddd27525d352.avif',
   },
 ];
 
@@ -106,48 +114,56 @@ export const childCareServices = [
     title: 'Newborn Care',
     description: 'Specialized care for newborns including health assessments, feeding guidance, and developmental monitoring.',
     icon: 'FaBaby',
+    image: `https://ik.imagekit.io/bumvzsaaz/Fresh%2048%20newborn%20poses.jpeg`
   },
   {
     id: 'child-vaccination',
     title: 'Child Vaccination',
     description: 'Complete vaccination program following the national immunization schedule with safe and effective vaccines.',
     icon: 'FaSyringe',
+    image: 'https://ik.imagekit.io/bumvzsaaz/images.jpeg'
   },
   {
     id: 'growth-monitoring',
     title: 'Growth Monitoring',
     description: 'Regular tracking of your child\'s height, weight, and developmental milestones with growth chart analysis.',
     icon: 'FaChartLine',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Progress%20Vectors,%20Photos%20and%20PSD%20files%20_%20Free%20Download.jpeg'
   },
   {
     id: 'nutrition-guidance',
     title: 'Nutrition Guidance',
     description: 'Expert advice on child nutrition, dietary plans, and addressing nutritional deficiencies for healthy growth.',
     icon: 'FaCarrot',
+    image: 'https://ik.imagekit.io/bumvzsaaz/How%20sugar%20affects%20energy%20level_Checkk%20link%20in%20bio.jpeg'
   },
   {
     id: 'child-fever',
     title: 'Fever Treatment',
     description: 'Gentle and effective treatment of childhood fevers with careful monitoring and age-appropriate medications.',
     icon: 'FaThermometerHalf',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Symptoms%20of%20Fever%20in%20Adults,%20Children,%20and%20Babies,%20and%20When%20to%20Seek%20Help.jpeg'
   },
   {
     id: 'cold-cough',
     title: 'Cold & Cough Treatment',
     description: 'Treatment for common cold, cough, and respiratory infections in children with safe medications.',
     icon: 'FaLungs',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Cough_%20Ayurvedic%20Perspective,%20Remedies%20&%20Prevention.jpeg'
   },
   {
     id: 'routine-checkup',
     title: 'Routine Check-up',
     description: 'Regular pediatric check-ups to ensure your child\'s health and development are on track.',
     icon: 'FaChild',
+    image: 'https://ik.imagekit.io/bumvzsaaz/istockphoto-2162707468-612x612.jpg?updatedAt=1784356297322'
   },
   {
     id: 'development-assessment',
     title: 'Development Assessment',
     description: 'Comprehensive evaluation of cognitive, motor, and social development milestones in children.',
     icon: 'FaBrain',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Special%20Education%20Support%20for%20Children%20_%20Personalized%20Learning%20&%20Care.jpeg'
   },
 ];
 
@@ -254,31 +270,37 @@ export const whyChooseUs = [
     title: '24/7 Emergency Care',
     description: 'Round-the-clock emergency services with experienced medical staff ready to handle any medical situation.',
     icon: 'MdEmergency',
+    image: 'https://ik.imagekit.io/bumvzsaaz/download.jpeg?updatedAt=1784787144145'
   },
   {
     title: 'Experienced Doctors',
     description: 'Our team of highly qualified doctors brings decades of combined experience in general medicine and pediatrics.',
     icon: 'FaUserMd',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Health-image-2.jpeg?updatedAt=1782724056979'
   },
   {
     title: 'Modern Equipment',
     description: 'State-of-the-art medical equipment and technology for accurate diagnosis and effective treatment.',
     icon: 'MdBiotech',
+    image: 'https://ik.imagekit.io/bumvzsaaz/photo-1629909613654-28e377c37b09.avif?updatedAt=1784784157816'
   },
   {
     title: 'Affordable Care',
     description: 'Quality healthcare at reasonable prices with transparent billing and no hidden charges.',
     icon: 'FaHandHoldingHeart',
+    image: 'https://ik.imagekit.io/bumvzsaaz/People%20Reveal%20Secrets%20from%20Different%20Jobs%20They_ve___.jpeg?updatedAt=1784787144725'
   },
   {
     title: 'Child-Friendly Environment',
     description: 'A warm, colorful, and child-friendly atmosphere to make young patients feel comfortable and safe.',
     icon: 'FaChild',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Resilienz%20von%20Kindern%20st%C3%A4rken_%20Impulse%20und%20Tipps%20aus%20der%20P%C3%A4dagogik.jpeg?updatedAt=1784787144331'
   },
   {
     title: 'Patient-First Approach',
     description: 'We prioritize patient comfort, communication, and satisfaction in every aspect of our care.',
     icon: 'FaHeart',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Medium%20shot%20nurse%20and%20doctor%20checking%20patient%20_%20Free%20Photo.jpeg?updatedAt=1784787147145'
   },
 ];
 

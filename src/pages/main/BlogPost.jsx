@@ -8,7 +8,7 @@ import { getCollection } from '../../services/db';
 export default function BlogPost() {
   const { id } = useParams();
   const [copied, setCopied] = useState(false);
-  
+
   const [blog, setBlog] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ export default function BlogPost() {
         const currentBlog = blogsData.find(b => b.id === id);
         if (currentBlog) {
           setBlog(currentBlog);
-          
+
           const related = blogsData.filter(b => b.category === currentBlog.category && b.id !== currentBlog.id && b.published !== false).slice(0, 3);
           setRelatedPosts(related);
         }
@@ -80,9 +80,9 @@ export default function BlogPost() {
             <Link to="/blog" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition mb-6">
               <FaArrowLeft /> Back to Blog
             </Link>
-            <span className="inline-block bg-white/10 text-primary-light text-sm font-medium px-4 py-1.5 rounded-full mb-4 border border-white/20">
-              {blog.category}
-            </span>
+            <span className="inline-block bg-white/10 text-primary-light text-sm font-medium px-4 py-1.5 rounded-full mb-4 border border-white/20 ml-5 ms:ml-10">
+  {blog.category}
+</span>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-6 leading-tight">
               {blog.title}
             </h1>
