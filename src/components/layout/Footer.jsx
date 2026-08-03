@@ -35,17 +35,6 @@ const services = [
 
 
 
-/*{
-  'General Physician',
-  'Child Care',
-  'Health Check-up',
-  'Vaccination',
-  'Diabetes Management',
-  'Emergency Care',
-}
-
-*/
-
 
 const Footer = () => {
   const { info: hospitalInfo } = useHospitalInfo();

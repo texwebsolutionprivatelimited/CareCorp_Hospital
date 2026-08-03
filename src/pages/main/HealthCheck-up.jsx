@@ -8,25 +8,43 @@ const packages = [
     price: '₹1,500',
     description: 'Ideal for routine assessment with essential blood tests and general health review.',
     features: ['CBC', 'Blood Sugar', 'Blood Pressure Check', 'Doctor Consultation'],
+    image: "https://ik.imagekit.io/bumvzsaaz/download.jpeg?updatedAt=1784787144145"
   },
   {
     title: 'Advanced Health Check',
     price: '₹3,500',
     description: 'Complete full-body screening for early detection of common lifestyle diseases.',
     features: ['Lipid Profile', 'Liver & Kidney Function', 'ECG', 'Nutrition Guidance'],
+    image: "https://ik.imagekit.io/bumvzsaaz/Medium%20shot%20nurse%20and%20doctor%20checking%20patient%20_%20Free%20Photo.jpeg?updatedAt=1784787147145"
   },
   {
     title: 'Executive Premium Package',
     price: '₹6,500',
     description: 'Comprehensive package designed for professionals and families seeking in-depth evaluation.',
     features: ['Vitamin Profile', 'Thyroid Test', 'Chest X-ray', 'Priority Consultation'],
+    image: "https://ik.imagekit.io/bumvzsaaz/istockphoto-2162707468-612x612.jpg?updatedAt=1784356297322"
   },
 ];
 
 const highlights = [
-  { icon: FaStethoscope, title: 'Expert doctors', text: 'Consult with experienced physicians and specialists.' },
-  { icon: FaMicroscope, title: 'Modern diagnostics', text: 'Fast lab testing and accurate results with quality assurance.' },
-  { icon: FaShieldAlt, title: 'Preventive care', text: 'Detect issues early and stay ahead of health risks.' },
+  {
+    icon: FaStethoscope,
+    title: 'Expert doctors',
+    text: 'Consult with experienced physicians and specialists.',
+    image: 'https://ik.imagekit.io/bumvzsaaz/Health-image-2.jpeg?updatedAt=1782724056979',
+  },
+  {
+    icon: FaMicroscope,
+    title: 'Modern diagnostics',
+    text: 'Fast lab testing and accurate results with quality assurance.',
+    image: 'https://ik.imagekit.io/bumvzsaaz/photo-1629909613654-28e377c37b09.avif?updatedAt=1784784157816',
+  },
+  {
+    icon: FaShieldAlt,
+    title: 'Preventive care',
+    text: 'Detect issues early and stay ahead of health risks.',
+    image: 'https://ik.imagekit.io/bumvzsaaz/photo-1584036561566-baf8f5f1b144.avif',
+  },
 ];
 
 export default function HealthCheckup() {
@@ -99,13 +117,20 @@ export default function HealthCheckup() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.08 }}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm"
+                  className="group relative overflow-hidden rounded-2xl border border-slate-200 shadow-sm transition hover:shadow-lg"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-700">
-                    <Icon className="text-xl" />
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                    style={{ backgroundImage: `url(${item.image})` }}
+                  />
+                  <div className="absolute inset-0 bg-slate-950/55" />
+                  <div className="relative z-10 p-6">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur">
+                      <Icon className="text-xl" />
+                    </div>
+                    <h3 className="mt-4 font-heading text-lg font-semibold text-white">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-200">{item.text}</p>
                   </div>
-                  <h3 className="mt-4 font-heading text-lg font-semibold text-slate-800">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-text-secondary">{item.text}</p>
                 </motion.div>
               );
             })}
@@ -129,24 +154,31 @@ export default function HealthCheckup() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-md transition hover:-translate-y-1 hover:shadow-xl"
+                className="group relative overflow-hidden rounded-3xl border border-slate-200 shadow-md transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-heading text-xl font-semibold text-slate-800">{pkg.title}</h3>
-                  <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-700">{pkg.price}</span>
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                  style={{ backgroundImage: `url(${pkg.image})` }}
+                />
+                <div className="absolute inset-0 bg-slate-950/65" />
+                <div className="relative z-10 p-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-heading text-xl font-semibold text-white">{pkg.title}</h3>
+                    <span className="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur">{pkg.price}</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-slate-200">{pkg.description}</p>
+                  <ul className="mt-5 space-y-2 text-sm text-slate-100">
+                    {pkg.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <FaCheckCircle className="mt-1 text-emerald-300" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/appointment" className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-5 py-3 font-semibold text-white transition hover:bg-emerald-600">
+                    <FaCalendarAlt /> Book Appointment
+                  </Link>
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-text-secondary">{pkg.description}</p>
-                <ul className="mt-5 space-y-2 text-sm text-slate-700">
-                  {pkg.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <FaCheckCircle className="mt-1 text-primary" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link to="/appointment" className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-white transition hover:bg-primary-dark">
-                  <FaCalendarAlt /> Book This Package
-                </Link>
               </motion.div>
             ))}
           </div>
