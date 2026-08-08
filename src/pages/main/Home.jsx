@@ -597,6 +597,43 @@ const Home = () => {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 9 — Patient Testimonials
       ═══════════════════════════════════════════════════════════ */}
+      <section className="section-padding bg-background">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeading
+            title="Health Tips & Articles"
+            subtitle="Expert health advice and latest updates from our medical team"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            {blogs.slice(0, 3).map((blog) => (
+              <BlogCard key={blog.id} blog={blog} />
+            ))}
+            {blogs.length === 0 && (
+              <div className="col-span-full text-center py-8 text-slate-500">No articles available.</div>
+            )}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-center mt-10"
+          >
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all duration-300"
+            >
+              View All Articles <FaArrowRight className="text-sm" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 10 — Health Tips (Latest Blogs)
+      ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto">
           <SectionHeading
@@ -632,43 +669,6 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 10 — Health Tips (Latest Blogs)
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-background">
-        <div className="max-w-7xl mx-auto">
-          <SectionHeading
-            title="Health Tips & Articles"
-            subtitle="Expert health advice and latest updates from our medical team"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            {blogs.slice(0, 3).map((blog) => (
-              <BlogCard key={blog.id} blog={blog} />
-            ))}
-            {blogs.length === 0 && (
-              <div className="col-span-full text-center py-8 text-slate-500">No articles available.</div>
-            )}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center mt-10"
-          >
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all duration-300"
-            >
-              View All Articles <FaArrowRight className="text-sm" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
     </>
 
   );

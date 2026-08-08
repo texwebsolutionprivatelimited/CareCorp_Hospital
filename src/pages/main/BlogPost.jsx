@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
-import { FaArrowLeft, FaCalendarAlt, FaClock, FaUser, FaWhatsapp, FaLink, FaCheckCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaCalendarAlt, FaClock, FaUser, FaWhatsapp, FaLink, FaCheckCircle, FaHospital } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import BlogCard from '../../components/ui/BlogCard';
 import { getCollection } from '../../services/db';
@@ -74,7 +74,18 @@ export default function BlogPost() {
   return (
     <div>
       {/* Banner */}
-      <section className="gradient-hero pt-32 pb-16 text-white relative overflow-hidden">
+      <section className="relative pt-32 pb-16 text-white overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src={blog.image || '/images/hospital-hero.jpg'}
+            alt={blog.title}
+            className="w-full h-full object-cover"
+          />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/70" />
+        </div>
+
         <div className="max-w-4xl mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Link to="/blog" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition mb-6">
@@ -89,7 +100,8 @@ export default function BlogPost() {
             <div className="flex items-center gap-6 text-slate-300 text-sm flex-wrap">
               <span className="flex items-center gap-2"><FaCalendarAlt /> {new Date(blog.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
               <span className="flex items-center gap-2"><FaClock /> {blog.readTime || '3 min read'}</span>
-              <span className="flex items-center gap-2"><FaUser /> CareFirst Hospital</span>
+              {blog.author && <span className="flex items-center gap-2"><FaUser /> {blog.author}</span>}
+              <span className="flex items-center gap-2"><FaHospital /> CareFirst Hospital</span>
             </div>
           </motion.div>
         </div>

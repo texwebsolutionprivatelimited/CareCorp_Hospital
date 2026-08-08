@@ -30,8 +30,8 @@ export default function BlogManagement() {
     setLoading(false);
   };
 
-  const openAdd = () => { setEditingBlog(null); setForm({ title: '', category: '', excerpt: '', content: '', published: true, image: '' }); setShowModal(true); };
-  const openEdit = (blog) => { setEditingBlog(blog); setForm({ title: blog.title, category: blog.category, excerpt: blog.excerpt, content: blog.content, published: blog.published ?? true, image: blog.image || '' }); setShowModal(true); };
+  const openAdd = () => { setEditingBlog(null); setForm({ title: '', category: '', excerpt: '', content: '', author: '', published: true, image: '' }); setShowModal(true); };
+  const openEdit = (blog) => { setEditingBlog(blog); setForm({ title: blog.title, category: blog.category, excerpt: blog.excerpt, content: blog.content, author: blog.author || '', published: blog.published ?? true, image: blog.image || '' }); setShowModal(true); };
 
   const handleSave = async () => {
     const blogData = { 
@@ -169,6 +169,7 @@ export default function BlogManagement() {
                   {blogCategories.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">Author Name</label><input className={inputClass} value={form.author} onChange={e => setForm({ ...form, author: e.target.value })} placeholder="Author's name" /></div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Cover Image</label>
                 <div className="flex items-center gap-3">
