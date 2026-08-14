@@ -175,7 +175,7 @@ export const doctors = [
     specialization: 'General Physician',
     experience: '15+ Years Experience',
     timing: 'Mon - Sat: 9:00 AM - 2:00 PM',
-    languages: ['Hindi', 'English', 'Marathi'],
+    languages: ['Hindi', 'English', 'Gujrati'],
     image: '/images/doctors/dr-rajesh-sharma.jpg',
     about: 'Dr. Rajesh Sharma is a highly experienced general physician with over 15 years of practice. He specializes in treating chronic conditions like diabetes, hypertension, and thyroid disorders. Known for his patient-centric approach and thorough diagnosis.',
   },

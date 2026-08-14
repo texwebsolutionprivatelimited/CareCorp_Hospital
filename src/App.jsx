@@ -14,6 +14,8 @@ const Doctors = lazy(() => import('./pages/main/Doctors'));
 const Services = lazy(() => import('./pages/main/Services'));
 const GeneralPhysician = lazy(() => import('./pages/main/GeneralPhysician'));
 const ChildCare = lazy(() => import('./pages/main/ChildCare'));
+const HealthCheckup = lazy(() => import('./pages/main/HealthCheck-up'));
+const Vaccination = lazy(() => import('./pages/main/Vaccination'));
 const Appointment = lazy(() => import('./pages/main/Appointment'));
 const Blog = lazy(() => import('./pages/main/Blog'));
 const BlogPost = lazy(() => import('./pages/main/BlogPost'));
@@ -66,6 +68,8 @@ function PublicLayout() {
             <Route path="/services" element={<Services />} />
             <Route path="/services/general-physician" element={<GeneralPhysician />} />
             <Route path="/services/child-care" element={<ChildCare />} />
+            <Route path="/health-checkup" element={<HealthCheckup />} />
+            <Route path="/vaccination" element={<Vaccination />} />
             <Route path="/appointment" element={<Appointment />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />

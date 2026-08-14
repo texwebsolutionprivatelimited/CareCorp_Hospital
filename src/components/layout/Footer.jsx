@@ -26,13 +26,15 @@ const quickLinks = [
 ];
 
 const services = [
-  'General Physician',
-  'Child Care',
-  'Health Check-up',
-  'Vaccination',
-  'Diabetes Management',
-  'Emergency Care',
+  { name: 'General Physician', path: '/services/general-physician' },
+  { name: 'Child Care', path: '/services/child-care' },
+  { name: 'Health Check-up', path: '/health-checkup' },
+  { name: 'Vaccination', path: '/vaccination' },
+  { name: 'Emergency Care', path: '/contact' },
 ];
+
+
+
 
 const Footer = () => {
   const { info: hospitalInfo } = useHospitalInfo();
@@ -150,16 +152,16 @@ const Footer = () => {
               </h4>
               <div className="w-12 h-0.5 bg-primary rounded-full mb-6" />
               <ul className="space-y-3">
-                {services.map((service) => (
-                  <li key={service}>
+                {services.map((link) => (
+                  <li key={link.path}>
                     <Link
-                      to="/services"
+                      to={link.path}
                       className="text-slate-600 hover:text-primary transition-colors duration-200 text-sm flex items-center gap-2 group"
                     >
                       <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         →
                       </span>
-                      {service}
+                      {link.name}
                     </Link>
                   </li>
                 ))}

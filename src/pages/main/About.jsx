@@ -328,90 +328,94 @@ export default function About() {
 
       {/* 7. Assistance Available & Helpline */}
       <section className="max-w-6xl mx-auto px-4 py-8 md:py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-8"
-        >
-          <span className="text-xs font-bold border-l-4 pl-2 uppercase block mb-2">
-            Support
-          </span>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-900">
-            HEALTHCARE HELPDESK
-          </h2>
-          <p className="text-sm text-slate-500 mt-1">
-            Our customer experience unit is focused on managing seamless patient
-            admission and checkup routes. Contact our medical desks directly.
-          </p>
-        </motion.div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12"
-        >
-          {[
-            "OPD & Emergency Consultation",
-            "Multi-Specialty Surgeon Booking",
-            "Cashless TPA & Corporate Claims",
-            "Ayushman Bharat Scheme Support",
-            "Diagnostics & Pathology Tracking",
-          ].map((help, idx) => (
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+          {/* Left Column - Title & Help Items */}
+          <div>
             <motion.div
-              key={idx}
-              variants={itemVariants}
-              className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3 text-sm font-medium text-slate-700"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-8"
             >
-              <span className="w-2 h-2 rounded-full bg-primary shrink-0"></span> {help}
+              <span className="text-xs font-bold border-l-4 pl-2 uppercase block mb-2">
+                Support
+              </span>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900">
+                HEALTHCARE HELPDESK
+              </h2>
+              <p className="text-sm text-slate-500 mt-1">
+                Our customer experience unit is focused on managing seamless patient
+                admission and checkup routes. Contact our medical desks directly.
+              </p>
             </motion.div>
-          ))}
-        </motion.div>
 
-        {/* Admissions Contact Footer Block */}
-        {/* UPDATE: Mobile ke liye w-full aur desktop ke liye w-full lg:w-[85%] ya w-[70%] rakha gaya hai */}
-        <div className="w-full lg:w-[80%] mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="bg-gradient-to-r from-purple-900 to-slate-950 text-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl"
-          >
-            <h3 className="text-lg sm:text-xl font-bold mb-2 tracking-wide">
-              PATIENT APPOINTMENTS HELPLINE
-            </h3>
-            <p className="text-xs text-purple-200 mb-6">
-              Planning a health screening or critical consultation? Connect with our
-              desk right away or drop by our admission counter.
-            </p>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="space-y-3"
+            >
+              {[
+                "OPD & Emergency Consultation",
+                "Multi-Specialty Surgeon Booking",
+                "Cashless TPA & Corporate Claims",
+                "Ayushman Bharat Scheme Support",
+                "Diagnostics & Pathology Tracking",
+              ].map((help, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={itemVariants}
+                  className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3 text-sm font-medium text-slate-700"
+                >
+                  <span className="w-2 h-2 rounded-full bg-primary shrink-0"></span> {help}
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-xs sm:text-sm mb-6 border-b border-purple-800 pb-6">
-              <div className="flex items-center gap-3 break-all sm:break-normal">
-                <FaPhoneAlt className="text-amber-400 shrink-0 text-base" />
-                <span>+91 8423193193</span>
-              </div>
-              <div className="flex items-center gap-3 break-all">
-                <FaEnvelope className="text-amber-400 shrink-0 text-base" />
-                <span>deepakn7267@gmail.com</span>
-              </div>
-              <div className="flex items-start md:items-center gap-3">
-                <FaMapMarkerAlt className="text-amber-400 shrink-0 text-base mt-0.5 md:mt-0" />
-                <span>
-                  AIIMS Gorakhpur ( Kunraghat, Gorakhpur Uttar Pradesh, 273008 )
-                </span>
-              </div>
-            </div>
+          {/* Right Column - Admissions Contact Footer Block */}
+          <div className="flex items-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="w-full bg-gradient-to-r from-purple-900 to-slate-950 text-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl"
+            >
+              <h3 className="text-lg sm:text-xl font-bold mb-2 tracking-wide">
+                PATIENT APPOINTMENTS HELPLINE
+              </h3>
+              <p className="text-xs text-purple-200 mb-6">
+                Planning a health screening or critical consultation? Connect with our
+                desk right away or drop by our admission counter.
+              </p>
 
-            {/* Button link wrapping problem solved */}
-            <a href="/Appointment" className="block w-full">
-              <button className="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 px-4 rounded-xl transition duration-300 text-xs sm:text-sm tracking-wider uppercase shadow-md">
-                BOOK AN APPOINTMENT
-              </button>
-            </a>
-          </motion.div>
+              <div className="grid grid-cols-1 gap-4 text-xs sm:text-sm mb-6 border-b border-purple-800 pb-6">
+                <div className="flex items-center gap-3 break-all sm:break-normal">
+                  <FaPhoneAlt className="text-amber-400 shrink-0 text-base" />
+                  <span>+91 8423193193</span>
+                </div>
+                <div className="flex items-center gap-3 break-all">
+                  <FaEnvelope className="text-amber-400 shrink-0 text-base" />
+                  <span>deepakn7267@gmail.com</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FaMapMarkerAlt className="text-amber-400 shrink-0 text-base mt-0.5" />
+                  <span>
+                    AIIMS Gorakhpur ( Kunraghat, Gorakhpur Uttar Pradesh, 273008 )
+                  </span>
+                </div>
+              </div>
+
+              {/* Button link wrapping problem solved */}
+              <a href="/Appointment" className="block w-full">
+                <button className="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 px-4 rounded-xl transition duration-300 text-xs sm:text-sm tracking-wider uppercase shadow-md">
+                  BOOK AN APPOINTMENT
+                </button>
+              </a>
+            </motion.div>
+          </div>
         </div>
       </section>
     </div>

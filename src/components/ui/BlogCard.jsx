@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaNewspaper, FaArrowRight } from 'react-icons/fa';
+import { FaNewspaper, FaArrowRight, FaUser, FaHospital } from 'react-icons/fa';
 
 const categoryGradients = {
   'Health Tips': 'from-teal-400 to-teal-600',
@@ -11,7 +11,7 @@ const categoryGradients = {
 };
 
 const BlogCard = ({ blog }) => {
-  const { id, title, excerpt, category, date, readTime } = blog;
+  const { id, title, excerpt, category, date, readTime, author } = blog;
 
   const gradient = categoryGradients[category] || 'from-teal-400 to-teal-600';
 
@@ -79,9 +79,15 @@ const BlogCard = ({ blog }) => {
         </p>
 
         {/* Bottom meta info */}
-        <div className="flex justify-between items-center text-xs text-slate-400">
-          <span>{formattedDate}</span>
-          <span>{readTime}</span>
+        <div className="space-y-2">
+          <div className="flex justify-between items-center text-xs text-slate-400">
+            <span>{formattedDate}</span>
+            <span>{readTime}</span>
+          </div>
+          <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
+            {author && <span className="flex items-center gap-1"><FaUser className="text-slate-500" /> {author}</span>}
+            <span className="flex items-center gap-1"><FaHospital className="text-slate-500" /> CareFirst Hospital</span>
+          </div>
         </div>
 
         {/* Read More link */}
