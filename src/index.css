@@ -97,18 +97,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== Section Spacing ===== */
 .section-padding {
-  padding: 4rem 1rem;
+  padding: 2rem 1rem;
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding: 5rem 2rem;
+    padding: 2.5rem 2rem;
   }
 }
 
 @media (min-width: 1024px) {
   .section-padding {
-    padding: 6rem 4rem;
+    padding: 3rem 4rem;
   }
 }
 
@@ -164,6 +164,16 @@ h1, h2, h3, h4, h5, h6 {
   animation-play-state: paused;
 }
 
+/* Hide scrollbars */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
 @media (hover: hover) and (pointer: fine) {
   .animate-scroll:hover {
     animation-play-state: paused;
@@ -193,4 +203,88 @@ input, textarea, select {
 input::placeholder,
 textarea::placeholder {
   color: #94a3b8;
+}
+
+/* ===== Navbar & Header Optimization ===== */
+header {
+  z-index: 50;
+}
+
+/* Professional Medical Red Emergency Bar */
+.emergency-bar {
+  background: linear-gradient(to right, #B91C3B, #A41635);
+  transition: all 0.3s ease;
+}
+
+.emergency-bar a {
+  position: relative;
+  white-space: nowrap;
+  padding: 0.25rem 0;
+}
+
+.emergency-bar a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.6);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.emergency-bar a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Sticky Navbar Enhancement */
+nav {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive Emergency Bar */
+@media (max-width: 640px) {
+  .emergency-bar {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .emergency-bar .hidden {
+    display: none !important;
+  }
+}
+
+/* Smooth scrolling padding for fixed header */
+@media (max-height: 800px) {
+  header {
+    height: auto;
+  }
+}
+
+/* Enhanced Mobile Navigation Spacing */
+@media (max-width: 1024px) {
+  nav {
+    border-top: 1px solid rgba(226, 232, 240, 0.5);
+  }
+}
+
+/* Professional hover states */
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent layout shift on sticky navbar */
+body {
+  scrollbar-gutter: stable;
+}
+
+/* Emergency phone link touch optimization */
+@media (hover: none) and (pointer: coarse) {
+  .emergency-bar a {
+    padding: 0.5rem;
+    margin: -0.5rem;
+  }
 }

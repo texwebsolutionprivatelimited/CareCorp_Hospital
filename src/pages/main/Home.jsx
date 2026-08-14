@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -33,6 +33,9 @@ import {
   FaClipboardCheck,
   FaCheckCircle,
   FaQuoteLeft,
+  FaChevronLeft,
+  FaChevronRight,
+  FaPlay,
 } from 'react-icons/fa';
 import { MdEmergency, MdBiotech } from 'react-icons/md';
 
@@ -42,6 +45,7 @@ import DoctorCard from '../../components/ui/DoctorCard';
 import TestimonialCard from '../../components/ui/TestimonialCard';
 import FAQAccordion from '../../components/ui/FAQAccordion';
 import BlogCard from '../../components/ui/BlogCard';
+import CountUp from '../../components/ui/CountUp';
 
 import {
   hospitalInfo,
@@ -76,23 +80,76 @@ const stagger = {
 
 const Home = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
-  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const doctorScrollRef = useRef(null);
+  const autoScrollTimerRef = useRef(null);
   
   const [doctors, setDoctors] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [blogs, setBlogs] = useState([]);
 
-  const handleCarouselInteractionStart = () => {
-    if (window.innerWidth < 768) {
-      setIsCarouselPaused(true);
+  // Continuous smooth auto-scroll for doctor carousel
+  useEffect(() => {
+    if (!isAutoScrolling || isHovered || doctors.length === 0) return;
+
+    let animationFrameId;
+    const scrollContainer = doctorScrollRef.current;
+
+    const step = () => {
+      if (scrollContainer) {
+        scrollContainer.scrollLeft += 1;
+        // Reset to 0 when halfway through duplicated list for infinite loop effect
+        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
+          scrollContainer.scrollLeft = 0;
+        }
+      }
+      animationFrameId = requestAnimationFrame(step);
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isAutoScrolling, isHovered, doctors]);
+
+  // Pause auto-scroll on click and set a 5-second auto-resume timer
+  const pauseAndScheduleAutoResume = () => {
+    setIsAutoScrolling(false);
+    if (autoScrollTimerRef.current) {
+      clearTimeout(autoScrollTimerRef.current);
     }
+    autoScrollTimerRef.current = setTimeout(() => {
+      setIsAutoScrolling(true);
+    }, 5000);
   };
 
-  const handleCarouselInteractionEnd = () => {
-    if (window.innerWidth < 768) {
-      window.setTimeout(() => setIsCarouselPaused(false), 900);
+  // Click handler for Previous button: Scrolls left & auto-resumes after 5 seconds of no clicks
+  const handlePrevDoctor = () => {
+    pauseAndScheduleAutoResume();
+    if (!doctorScrollRef.current) return;
+    if (doctorScrollRef.current.scrollLeft <= 10) {
+      doctorScrollRef.current.scrollLeft = doctorScrollRef.current.scrollWidth / 2;
     }
+    doctorScrollRef.current.scrollBy({ left: -360, behavior: 'smooth' });
   };
+
+  // Click handler for Next button: Scrolls right & auto-resumes after 5 seconds of no clicks
+  const handleNextDoctor = () => {
+    pauseAndScheduleAutoResume();
+    if (!doctorScrollRef.current) return;
+    if (doctorScrollRef.current.scrollLeft >= doctorScrollRef.current.scrollWidth / 2 - 10) {
+      doctorScrollRef.current.scrollLeft = 0;
+    }
+    doctorScrollRef.current.scrollBy({ left: 360, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    return () => {
+      if (autoScrollTimerRef.current) {
+        clearTimeout(autoScrollTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,7 +179,7 @@ const Home = () => {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 1 — Hero Banner
       ═══════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-23 ">
+      <section className="relative flex items-center overflow-hidden pt-24 pb-8 md:pb-12">
         {/* Hospital background image */}
         <div className="absolute inset-0">
           <img
@@ -142,7 +199,7 @@ const Home = () => {
           <div className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-primary-light/5 blur-2xl animate-bounce-gentle" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-20 w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12 w-full">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -153,7 +210,7 @@ const Home = () => {
             <motion.span
               variants={fadeUp}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 px-4 py-2 rounded-full text-sm mb-6 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 px-4 py-2 rounded-full text-sm mb-4 backdrop-blur-sm"
             >
               <FaHeartbeat className="text-primary-light" />
               Welcome to {hospitalInfo.name}
@@ -179,7 +236,7 @@ const Home = () => {
             <motion.p
               variants={fadeUp}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg md:text-xl text-slate-300 max-w-2xl mt-6"
+              className="text-lg md:text-xl text-slate-300 max-w-2xl mt-4"
             >
               Providing expert general physician and pediatric care with modern
               facilities, experienced doctors, and a warm, patient-first
@@ -190,7 +247,7 @@ const Home = () => {
             <motion.div
               variants={fadeUp}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 mt-10"
+              className="flex flex-col sm:flex-row gap-4 mt-6"
             >
               <Link
                 to="/appointment"
@@ -214,7 +271,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-16 lg:mt-24 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 px-6 py-6"
+            className="mt-8 lg:mt-12 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 px-6 py-5"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               {[
@@ -225,7 +282,7 @@ const Home = () => {
               ].map((stat, i) => (
                 <div key={i}>
                   <div className="text-2xl md:text-3xl font-heading font-extrabold text-white">
-                    {stat.value}
+                    <CountUp value={stat.value} />
                   </div>
                   <p className="text-xs md:text-sm text-slate-300 mt-1">
                     {stat.label}
@@ -236,41 +293,8 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
-
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 2 — Emergency Contact
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="gradient-emergency text-white py-4">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-center gap-8 flex-wrap">
-            <div className="flex items-center gap-2 font-semibold">
-              <FaAmbulance className="text-xl animate-bounce-gentle" />
-              <span>Emergency Services Available 24/7</span>
-            </div>
-            <a
-              href={`tel:${hospitalInfo.emergencyPhone}`}
-              className="flex items-center gap-2 hover:underline transition-all duration-300 hover:scale-105"
-            >
-              <FaPhoneAlt />
-              <span>{hospitalInfo.emergencyPhone}</span>
-            </a>
-            <a
-              href={`https://wa.me/${hospitalInfo.whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:underline transition-all duration-300 hover:scale-105"
-            >
-              <FaWhatsapp className="text-xl" />
-              <span>WhatsApp Us</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 4 — About Hospital
+          SECTION 2 — About Hospital
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-background">
         <div className="max-w-7xl mx-auto">
@@ -334,7 +358,7 @@ const Home = () => {
               <motion.div
                 variants={fadeUp}
                 transition={{ duration: 0.6, delay: 0.15 }}
-                className="mt-6 space-y-4 text-slate-600 leading-relaxed"
+                className="mt-4 space-y-3 text-slate-600 leading-relaxed"
               >
                 <p>
                   {hospitalInfo.name} is a premier multispecialty clinic dedicated to
@@ -354,7 +378,7 @@ const Home = () => {
               <motion.div
                 variants={fadeUp}
                 transition={{ duration: 0.6, delay: 0.25 }}
-                className="grid sm:grid-cols-2 gap-4 mt-8"
+                className="grid sm:grid-cols-2 gap-4 mt-5"
               >
                 <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
@@ -388,7 +412,7 @@ const Home = () => {
               >
                 <Link
                   to="/about"
-                  className="inline-flex items-center gap-2 text-primary font-semibold mt-8 hover:gap-3 transition-all duration-300"
+                  className="inline-flex items-center gap-2 text-primary font-semibold mt-5 hover:gap-3 transition-all duration-300"
                 >
                   Learn More About Us <FaArrowRight className="text-sm" />
                 </Link>
@@ -399,7 +423,7 @@ const Home = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 5 — Our Doctors
+          SECTION 3 — Our Doctors
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto">
@@ -408,23 +432,39 @@ const Home = () => {
             subtitle="Experienced, caring physicians dedicated to your health and well-being"
           />
 
-          <div className="mt-12 overflow-hidden w-full relative pb-8">
-            {/* Gradient masks for smooth fade out at edges */}
-            <div className="absolute top-0 left-0 w-8 md:w-24 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-            <div className="absolute top-0 right-0 w-8 md:w-24 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-            
-            {/* Sliding track */}
-            <div
-              className={`flex gap-8 w-max animate-scroll ${isCarouselPaused ? 'paused' : ''}`}
-              onPointerDown={handleCarouselInteractionStart}
-              onPointerUp={handleCarouselInteractionEnd}
-              onPointerLeave={handleCarouselInteractionEnd}
-              onTouchStart={handleCarouselInteractionStart}
-              onTouchEnd={handleCarouselInteractionEnd}
+          <div
+            className="mt-6 relative group"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {/* Left Navigation Arrow */}
+            <button
+              onClick={handlePrevDoctor}
+              aria-label="Previous Doctor"
+              className="absolute -left-2 md:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-11 md:h-11 rounded-full bg-white hover:bg-primary text-slate-700 hover:text-white border border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+              title="Previous Doctor"
             >
-              {/* Duplicate the array to create an infinite loop effect */}
+              <FaChevronLeft className="text-base md:text-lg pr-0.5" />
+            </button>
+
+            {/* Right Navigation Arrow */}
+            <button
+              onClick={handleNextDoctor}
+              aria-label="Next Doctor"
+              className="absolute -right-2 md:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-11 md:h-11 rounded-full bg-white hover:bg-primary text-slate-700 hover:text-white border border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+              title="Next Doctor"
+            >
+              <FaChevronRight className="text-base md:text-lg pl-0.5" />
+            </button>
+
+            {/* Scrollable track */}
+            <div
+              ref={doctorScrollRef}
+              className="flex gap-6 overflow-x-auto scrollbar-none scroll-smooth py-3 px-2 select-none"
+            >
+              {/* Duplicate array for smooth looping */}
               {[...doctors, ...doctors].map((doctor, idx) => (
-                <div key={`${doctor.id}-${idx}`} className="w-[320px] md:w-[350px] shrink-0">
+                <div key={`${doctor.id}-${idx}`} className="w-[300px] sm:w-[320px] md:w-[350px] shrink-0">
                   <DoctorCard doctor={doctor} />
                 </div>
               ))}
@@ -439,7 +479,7 @@ const Home = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center mt-10"
+            className="text-center mt-6"
           >
             <Link
               to="/doctors"
@@ -452,7 +492,7 @@ const Home = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 6 — General Physician Services
+          SECTION 4 — General Physician Services
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-background">
         <div className="max-w-7xl mx-auto">
@@ -461,7 +501,7 @@ const Home = () => {
             subtitle="Comprehensive medical care for adults — from diagnostics to chronic disease management"
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
             {generalPhysicianServices.map((service, index) => (
               <ServiceCard
                 key={service.id}
@@ -478,7 +518,7 @@ const Home = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 7 — Child Care Services
+          SECTION 5 — Child Care Services
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto">
@@ -487,7 +527,7 @@ const Home = () => {
             subtitle="Gentle, expert care for your little ones — from newborn to adolescent health"
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
             {childCareServices.map((service, index) => (
               <ServiceCard
                 key={service.id}
@@ -504,7 +544,7 @@ const Home = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 8 — Why Choose Us
+          SECTION 6 — Why Choose Us
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-slate-50 overflow-hidden relative">
         {/* Decorative background blobs */}
@@ -519,7 +559,7 @@ const Home = () => {
             subtitle="Delivering excellence in healthcare with a patient-first philosophy"
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {whyChooseUs.map((item, index) => {
               const IconComp = whyChooseIconMap[item.icon] || FaHeartbeat;
               const hasImage = Boolean(item.image);
@@ -568,8 +608,8 @@ const Home = () => {
           </div>
 
           {/* Stats Counter */}
-          <div className="mt-16">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+          <div className="mt-8">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 {stats.map((stat, i) => (
                   <motion.div
@@ -580,8 +620,7 @@ const Home = () => {
                     transition={{ duration: 0.5, delay: i * 0.1 }}
                   >
                     <div className="text-4xl md:text-5xl font-heading font-bold text-primary">
-                      {stat.value.toLocaleString()}
-                      {stat.suffix}
+                      <CountUp value={`${stat.value}${stat.suffix || ''}`} />
                     </div>
                     <p className="text-sm text-slate-600 mt-2 font-medium">
                       {stat.label}
@@ -595,7 +634,7 @@ const Home = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 9 — Patient Testimonials
+          SECTION 7 — Patient Testimonials
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-background">
         <div className="max-w-7xl mx-auto">
@@ -604,7 +643,7 @@ const Home = () => {
             subtitle="Expert health advice and latest updates from our medical team"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {blogs.slice(0, 3).map((blog) => (
               <BlogCard key={blog.id} blog={blog} />
             ))}
@@ -618,7 +657,7 @@ const Home = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center mt-10"
+            className="text-center mt-6"
           >
             <Link
               to="/blog"
@@ -632,7 +671,7 @@ const Home = () => {
 
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 10 — Health Tips (Latest Blogs)
+          SECTION 8 — Health Tips (Latest Blogs)
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto">
@@ -641,7 +680,7 @@ const Home = () => {
             subtitle="Real experiences from the families who trust us with their health"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mt-6">
             {testimonials.map((testimonial) => (
               <TestimonialCard
                 key={testimonial.id}
@@ -658,7 +697,7 @@ const Home = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center mt-10"
+            className="text-center mt-6"
           >
             <Link
               to="/testimonials"
@@ -670,7 +709,6 @@ const Home = () => {
         </div>
       </section>
     </>
-
   );
 };
 
