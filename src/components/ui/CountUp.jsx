@@ -5,7 +5,7 @@ const CountUp = ({ value, duration = 2000 }) => {
   const [hasStarted, setHasStarted] = useState(false);
   const ref = useRef(null);
 
-  // Extract target number and suffix (e.g. "15000+" -> target: 15000, suffix: "+")
+  // Extract target number and suffix
   const strValue = String(value ?? '');
   const numericMatch = strValue.match(/[\d,]+/);
   const targetNumber = numericMatch ? parseInt(numericMatch[0].replace(/,/g, ''), 10) : 0;

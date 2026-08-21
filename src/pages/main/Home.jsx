@@ -54,6 +54,7 @@ import {
   stats,
   whyChooseUs,
   faqs,
+  testimonials as sampleTestimonials,
 } from '../../constants/data';
 import { getCollection } from '../../services/db';
 
@@ -68,6 +69,71 @@ const whyChooseIconMap = {
   FaHeart: FaHeartbeat, // fallback for FaHeart → FaHeartbeat
 };
 
+/* ─── Why Choose Us item card component with image load state ─── */
+const WhyChooseCard = ({ item, index }) => {
+  const IconComp = whyChooseIconMap[item.icon] || FaHeartbeat;
+  const hasImage = Boolean(item.image);
+  const [isLoaded, setIsLoaded] = useState(!hasImage);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`relative overflow-hidden rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 group min-h-[220px] ${hasImage ? 'text-white' : 'bg-white'
+        }`}
+    >
+      {hasImage && (
+        <>
+          <img
+            src={item.image}
+            alt=""
+            className="hidden"
+            onLoad={() => setIsLoaded(true)}
+            onError={() => setIsLoaded(true)}
+          />
+          {!isLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 z-30 flex flex-col justify-between p-6 animate-pulse">
+              <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-5 bg-white/20 rounded w-3/4" />
+                <div className="h-4 bg-white/10 rounded w-full" />
+                <div className="h-4 bg-white/10 rounded w-4/5" />
+              </div>
+            </div>
+          )}
+          <div
+            className={`absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 group-hover:scale-110 blur-[1px] ${isLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+            style={{ backgroundImage: `url(${item.image})`, filter: 'saturate(0.9) contrast(0.95)' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/45 to-slate-900/20" />
+        </>
+      )}
+
+      <div className={`relative z-10 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div
+          className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 ${hasImage
+            ? 'bg-white/20 backdrop-blur-sm text-white border border-white/20'
+            : 'bg-primary/10 text-primary'
+            }`}
+        >
+          <IconComp className="text-2xl" />
+        </div>
+        <h3 className={`font-heading font-semibold text-lg mb-2 ${hasImage ? 'text-white' : 'text-slate-800'}`}>
+          {item.title}
+        </h3>
+        <p className={`text-sm leading-relaxed ${hasImage ? 'text-slate-200' : 'text-slate-600'}`}>
+          {item.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
+
 /* ─── Shared animation variants ─── */
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -80,76 +146,48 @@ const stagger = {
 
 const Home = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
   const doctorScrollRef = useRef(null);
-  const autoScrollTimerRef = useRef(null);
-  
+
   const [doctors, setDoctors] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const [visibleTestimonialCount, setVisibleTestimonialCount] = useState(2);
+  const [hasViewedMoreTestimonials, setHasViewedMoreTestimonials] = useState(false);
 
-  // Continuous smooth auto-scroll for doctor carousel
   useEffect(() => {
-    if (!isAutoScrolling || isHovered || doctors.length === 0) return;
-
-    let animationFrameId;
-    const scrollContainer = doctorScrollRef.current;
-
-    const step = () => {
-      if (scrollContainer) {
-        scrollContainer.scrollLeft += 1;
-        // Reset to 0 when halfway through duplicated list for infinite loop effect
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-          scrollContainer.scrollLeft = 0;
-        }
+    const handleResize = () => {
+      if (!hasViewedMoreTestimonials) {
+        setVisibleTestimonialCount(2);
       }
-      animationFrameId = requestAnimationFrame(step);
     };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [hasViewedMoreTestimonials]);
 
-    animationFrameId = requestAnimationFrame(step);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isAutoScrolling, isHovered, doctors]);
-
-  // Pause auto-scroll on click and set a 5-second auto-resume timer
-  const pauseAndScheduleAutoResume = () => {
-    setIsAutoScrolling(false);
-    if (autoScrollTimerRef.current) {
-      clearTimeout(autoScrollTimerRef.current);
-    }
-    autoScrollTimerRef.current = setTimeout(() => {
-      setIsAutoScrolling(true);
-    }, 5000);
+  const handleViewMoreTestimonials = () => {
+    setHasViewedMoreTestimonials(true);
+    const step = 2;
+    setVisibleTestimonialCount(prev => prev + step);
   };
 
-  // Click handler for Previous button: Scrolls left & auto-resumes after 5 seconds of no clicks
+  // Click handler for Previous button
   const handlePrevDoctor = () => {
-    pauseAndScheduleAutoResume();
     if (!doctorScrollRef.current) return;
-    if (doctorScrollRef.current.scrollLeft <= 10) {
-      doctorScrollRef.current.scrollLeft = doctorScrollRef.current.scrollWidth / 2;
-    }
-    doctorScrollRef.current.scrollBy({ left: -360, behavior: 'smooth' });
+    const container = doctorScrollRef.current;
+    const firstChild = container.firstElementChild;
+    const scrollAmount = firstChild ? firstChild.getBoundingClientRect().width + 16 : 300;
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
   };
 
-  // Click handler for Next button: Scrolls right & auto-resumes after 5 seconds of no clicks
+  // Click handler for Next button
   const handleNextDoctor = () => {
-    pauseAndScheduleAutoResume();
     if (!doctorScrollRef.current) return;
-    if (doctorScrollRef.current.scrollLeft >= doctorScrollRef.current.scrollWidth / 2 - 10) {
-      doctorScrollRef.current.scrollLeft = 0;
-    }
-    doctorScrollRef.current.scrollBy({ left: 360, behavior: 'smooth' });
+    const container = doctorScrollRef.current;
+    const firstChild = container.firstElementChild;
+    const scrollAmount = firstChild ? firstChild.getBoundingClientRect().width + 16 : 300;
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    return () => {
-      if (autoScrollTimerRef.current) {
-        clearTimeout(autoScrollTimerRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -159,16 +197,17 @@ const Home = () => {
           getCollection('testimonials'),
           getCollection('blogs')
         ]);
-        
+
         setDoctors(docsData.filter(d => d.name));
-        setTestimonials(testData);
-        
+        setTestimonials(testData && testData.length > 0 ? testData : sampleTestimonials);
+
         // Only show published blogs and sort by date descending
         const publishedBlogs = blogsData.filter(b => b.published !== false);
         publishedBlogs.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
         setBlogs(publishedBlogs);
       } catch (error) {
         console.error("Error fetching home data:", error);
+        setTestimonials(sampleTestimonials);
       }
     };
     fetchData();
@@ -220,7 +259,7 @@ const Home = () => {
             <motion.h1
               variants={fadeUp}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-heading font-extrabold text-white leading-tight"
+              className="text-xl md:text-6xl lg:text-7xl font-heading font-extrabold text-white leading-tight"
             >
               Compassionate Care
               <br />
@@ -319,7 +358,7 @@ const Home = () => {
 
                 {/* Floating decorative cards */}
                 <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 flex items-center gap-2 animate-float">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center">
                     <FaShieldAlt className="text-green-500 text-sm" />
                   </div>
                   <div>
@@ -329,7 +368,7 @@ const Home = () => {
                 </div>
 
                 <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 flex items-center gap-2 animate-bounce-gentle">
-                  <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-amber-100 flex items-center justify-center">
                     <FaStar className="text-amber-500 text-sm" />
                   </div>
                   <div>
@@ -366,12 +405,19 @@ const Home = () => {
                   ages. With over 15 years of medical excellence, we have earned the
                   trust of thousands of families across Mumbai.
                 </p>
-                <p>
+                <p className={showMoreAbout ? 'block' : 'hidden md:block'}>
                   Our team of experienced physicians and pediatricians, supported by
                   modern diagnostic equipment, ensures accurate diagnosis and
                   effective treatment. From routine health check-ups to emergency
                   care, we are here for you 24/7.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setShowMoreAbout(!showMoreAbout)}
+                  className="md:hidden inline-flex items-center gap-1 text-primary font-semibold text-sm hover:underline focus:outline-none pt-1"
+                >
+                  {showMoreAbout ? 'View Less' : 'View More'}
+                </button>
               </motion.div>
 
               {/* Mission & Vision cards */}
@@ -432,39 +478,37 @@ const Home = () => {
             subtitle="Experienced, caring physicians dedicated to your health and well-being"
           />
 
-          <div
-            className="mt-6 relative group"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
+          <div className="mt-6 relative group">
             {/* Left Navigation Arrow */}
             <button
               onClick={handlePrevDoctor}
               aria-label="Previous Doctor"
-              className="absolute -left-2 md:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-11 md:h-11 rounded-full bg-white hover:bg-primary text-slate-700 hover:text-white border border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute -left-2 md:-left-5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-white hover:bg-primary text-slate-700 hover:text-white border border-slate-200 flex items-center justify-center transition-colors cursor-pointer shadow-md"
               title="Previous Doctor"
             >
-              <FaChevronLeft className="text-base md:text-lg pr-0.5" />
+              <FaChevronLeft className="text-sm sm:text-base md:text-lg pr-0.5" />
             </button>
 
             {/* Right Navigation Arrow */}
             <button
               onClick={handleNextDoctor}
               aria-label="Next Doctor"
-              className="absolute -right-2 md:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-11 md:h-11 rounded-full bg-white hover:bg-primary text-slate-700 hover:text-white border border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute -right-2 md:-right-5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-white hover:bg-primary text-slate-700 hover:text-white border border-slate-200 flex items-center justify-center transition-colors cursor-pointer shadow-md"
               title="Next Doctor"
             >
-              <FaChevronRight className="text-base md:text-lg pl-0.5" />
+              <FaChevronRight className="text-sm sm:text-base md:text-lg pl-0.5" />
             </button>
 
             {/* Scrollable track */}
             <div
               ref={doctorScrollRef}
-              className="flex gap-6 overflow-x-auto scrollbar-none scroll-smooth py-3 px-2 select-none"
+              className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto overflow-y-hidden touch-pan-x scrollbar-none scroll-smooth py-3 px-1 select-none"
             >
-              {/* Duplicate array for smooth looping */}
-              {[...doctors, ...doctors].map((doctor, idx) => (
-                <div key={`${doctor.id}-${idx}`} className="w-[300px] sm:w-[320px] md:w-[350px] shrink-0">
+              {doctors.map((doctor, idx) => (
+                <div
+                  key={`${doctor.id}-${idx}`}
+                  className="w-full sm:w-[calc((100%-1rem)/2)] md:w-[calc((100%-3*1.5rem)/4)] shrink-0"
+                >
                   <DoctorCard doctor={doctor} />
                 </div>
               ))}
@@ -491,57 +535,97 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 4 — General Physician Services
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-background">
-        <div className="max-w-7xl mx-auto">
-          <SectionHeading
-            title="General Physician Services"
-            subtitle="Comprehensive medical care for adults — from diagnostics to chronic disease management"
+     {/* ═══════════════════════════════════════════════════════════
+    SECTION 4 — General Physician Services
+═══════════════════════════════════════════════════════════ */}
+
+<section className="section-padding bg-background">
+  <div className="max-w-7xl mx-auto">
+    <SectionHeading
+      title="General Physician Services"
+      subtitle="Comprehensive medical care for adults — from diagnostics to chronic disease management"
+    />
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+      {generalPhysicianServices.map((service, index) => (
+        <div
+          key={service.id}
+          className={index >= 2 ? "hidden sm:block" : ""}
+        >
+          <ServiceCard
+            title={service.title}
+            description={service.description}
+            icon={service.icon}
+            image={service.image}
+            index={index}
+            variant="general"
           />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-            {generalPhysicianServices.map((service, index) => (
-              <ServiceCard
-                key={service.id}
-                title={service.title}
-                description={service.description}
-                icon={service.icon}
-                image={service.image}
-                index={index}
-                variant="general"
-              />
-            ))}
-          </div>
         </div>
-      </section>
+      ))}
+    </div>
 
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 5 — Child Care Services
-      ═══════════════════════════════════════════════════════════ */}
+    {/* View All - ONLY MOBILE */}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+      className="text-center mt-6 lg:hidden"
+    >
+      <Link
+        to="/services/general-physician"
+        className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all duration-300"
+      >
+        View All General Physician
+        <FaArrowRight className="text-sm" />
+      </Link>
+    </motion.div>
+  </div>
+</section>
+
       <section className="section-padding bg-white">
-        <div className="max-w-7xl mx-auto">
-          <SectionHeading
-            title="Child Care & Pediatric Services"
-            subtitle="Gentle, expert care for your little ones — from newborn to adolescent health"
-          />
+  <div className="max-w-7xl mx-auto">
+    <SectionHeading
+      title="Child Care & Pediatric Services"
+      subtitle="Gentle, expert care for your little ones — from newborn to adolescent health"
+    />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-            {childCareServices.map((service, index) => (
-              <ServiceCard
-                key={service.id}
-                title={service.title}
-                description={service.description}
-                icon={service.icon}
-                image={service.image}
-                index={index}
-                variant="childcare"
-              />
-            ))}
-          </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+      {childCareServices.map((service, index) => (
+        <div
+          key={service.id}
+          className={index >= 2 ? "hidden sm:block" : ""}
+        >
+          <ServiceCard
+            title={service.title}
+            description={service.description}
+            icon={service.icon}
+            image={service.image}
+            index={index}
+            variant="childcare"
+          />
         </div>
-      </section>
+      ))}
+    </div>
+
+    {/* View All - ONLY MOBILE */}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+      className="text-center mt-6 lg:hidden"
+    >
+      <Link
+        to="/services/child-care"
+        className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all duration-300"
+      >
+        View All Child Care
+        <FaArrowRight className="text-sm" />
+      </Link>
+    </motion.div>
+  </div>
+</section>
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 6 — Why Choose Us
@@ -560,51 +644,9 @@ const Home = () => {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            {whyChooseUs.map((item, index) => {
-              const IconComp = whyChooseIconMap[item.icon] || FaHeartbeat;
-              const hasImage = Boolean(item.image);
-
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className={`relative overflow-hidden rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 group min-h-[220px] ${
-                    hasImage ? 'text-white' : 'bg-white'
-                  }`}
-                >
-                  {hasImage && (
-                    <>
-                      <div
-                        className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-500 group-hover:scale-110 blur-[1px]"
-                        style={{ backgroundImage: `url(${item.image})`, filter: 'saturate(0.9) contrast(0.95)' }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/45 to-slate-900/20" />
-                    </>
-                  )}
-
-                  <div className="relative z-10">
-                    <div
-                      className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 ${
-                        hasImage
-                          ? 'bg-white/20 backdrop-blur-sm text-white border border-white/20'
-                          : 'bg-primary/10 text-primary'
-                      }`}
-                    >
-                      <IconComp className="text-2xl" />
-                    </div>
-                    <h3 className={`font-heading font-semibold text-lg mb-2 ${hasImage ? 'text-white' : 'text-slate-800'}`}>
-                      {item.title}
-                    </h3>
-                    <p className={`text-sm leading-relaxed ${hasImage ? 'text-slate-200' : 'text-slate-600'}`}>
-                      {item.description}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-            })}
+            {whyChooseUs.map((item, index) => (
+              <WhyChooseCard key={index} item={item} index={index} />
+            ))}
           </div>
 
           {/* Stats Counter */}
@@ -634,7 +676,7 @@ const Home = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 7 — Patient Testimonials
+          SECTION 7 — Health Tips (Latest Blogs)
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-background">
         <div className="max-w-7xl mx-auto">
@@ -644,8 +686,10 @@ const Home = () => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            {blogs.slice(0, 3).map((blog) => (
-              <BlogCard key={blog.id} blog={blog} />
+            {blogs.slice(0, 3).map((blog, index) => (
+              <div key={blog.id} className={index >= 2 ? "hidden md:block" : ""}>
+                <BlogCard blog={blog} />
+              </div>
             ))}
             {blogs.length === 0 && (
               <div className="col-span-full text-center py-8 text-slate-500">No articles available.</div>
@@ -671,7 +715,7 @@ const Home = () => {
 
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 8 — Health Tips (Latest Blogs)
+          SECTION 8 —     Patient Testimonials
       ═══════════════════════════════════════════════════════════ */}
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto">
@@ -680,15 +724,29 @@ const Home = () => {
             subtitle="Real experiences from the families who trust us with their health"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mt-6">
-            {testimonials.map((testimonial) => (
-              <TestimonialCard
-                key={testimonial.id}
-                testimonial={testimonial}
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto mt-6">
+            {testimonials.slice(0, visibleTestimonialCount).map((testimonial, index) => (
+              <motion.div
+                key={testimonial.id || index}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <TestimonialCard testimonial={testimonial} />
+              </motion.div>
             ))}
             {testimonials.length === 0 && (
               <div className="col-span-full text-center py-8 text-slate-500">No testimonials available.</div>
+            )}
+            {visibleTestimonialCount < testimonials.length && (
+              <div className="col-span-full text-center mt-4">
+                <button
+                  onClick={handleViewMoreTestimonials}
+                  className="bg-white border-2 border-primary text-primary font-semibold px-8 py-2.5 rounded-full hover:bg-primary hover:text-white transition-all duration-300 shadow-sm text-sm cursor-pointer"
+                >
+                  View More
+                </button>
+              </div>
             )}
           </div>
 

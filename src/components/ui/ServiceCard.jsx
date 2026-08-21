@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   FaThermometerHalf,
@@ -42,6 +43,36 @@ const ServiceCard = ({ title, description, icon, index = 0, variant = 'general',
 
   const isChildcare = variant === 'childcare';
   const hasImage = Boolean(image);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!hasImage) {
+      setIsLoaded(true);
+      return;
+    }
+
+    setIsLoaded(false);
+    let isMounted = true;
+    const img = new Image();
+    img.src = image;
+
+    const handleLoad = () => {
+      setTimeout(() => {
+        if (isMounted) setIsLoaded(true);
+      }, 500);
+    };
+
+    if (img.complete) {
+      handleLoad();
+    } else {
+      img.onload = handleLoad;
+      img.onerror = handleLoad;
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [image, hasImage]);
 
   return (
     <motion.div
@@ -53,10 +84,23 @@ const ServiceCard = ({ title, description, icon, index = 0, variant = 'general',
         hasImage ? 'text-white' : 'bg-white'
       }`}
     >
+      {/* Prominent Gol Gol Ghumta Hua Spinning Loader Overlay */}
+      {hasImage && !isLoaded && (
+        <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border border-slate-200 shadow-inner">
+          <div className="relative flex items-center justify-center w-12 h-12">
+            <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <div className="absolute w-7 h-7 border-3 border-amber-400/30 border-b-amber-500 rounded-full animate-spin [animation-direction:reverse]" />
+          </div>
+          <span className="text-xs font-bold text-slate-600 tracking-wider uppercase animate-pulse">Loading...</span>
+        </div>
+      )}
+
       {hasImage && (
         <>
           <div
-            className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-500 group-hover:scale-110 blur-[1px]"
+            className={`absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 group-hover:scale-110 blur-[1px] ${
+              isLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
             style={{ backgroundImage: `url(${image})`, filter: 'saturate(0.9) contrast(0.95)' }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/45 to-slate-900/20" />
@@ -74,7 +118,7 @@ const ServiceCard = ({ title, description, icon, index = 0, variant = 'general',
         }`}
       />
 
-      <div className="relative z-10 h-full flex flex-col justify-between">
+      <div className={`relative z-10 h-full flex flex-col justify-between transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         {/* Icon container */}
         <div
           className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 ${

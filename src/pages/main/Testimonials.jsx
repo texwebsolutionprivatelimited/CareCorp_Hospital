@@ -5,18 +5,36 @@ import { FaStar } from 'react-icons/fa';
 import SectionHeading from '../../components/ui/SectionHeading';
 import TestimonialCard from '../../components/ui/TestimonialCard';
 import { getCollection } from '../../services/db';
+import { testimonials as sampleTestimonials } from '../../constants/data';
 
 export default function Testimonials() {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(2);
+  const [hasViewedMore, setHasViewedMore] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!hasViewedMore) {
+        setVisibleCount(2);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [hasViewedMore]);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
         const data = await getCollection('testimonials');
-        setTestimonials(data);
+        if (data && data.length > 0) {
+          setTestimonials(data);
+        } else {
+          setTestimonials(sampleTestimonials);
+        }
       } catch (error) {
         console.error("Error fetching testimonials:", error);
+        setTestimonials(sampleTestimonials);
       } finally {
         setLoading(false);
       }
@@ -24,14 +42,22 @@ export default function Testimonials() {
     fetchTestimonials();
   }, []);
 
+  const handleViewMore = () => {
+    setHasViewedMore(true);
+    const step = 2;
+    setVisibleCount(prev => prev + step);
+  };
+
   const avgRating = testimonials.length > 0 
-    ? (testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length).toFixed(1)
+    ? (testimonials.reduce((sum, t) => sum + Number(t.rating || 5), 0) / testimonials.length).toFixed(1)
     : "5.0";
+
+  const visibleTestimonials = testimonials.slice(0, visibleCount);
 
   return (
     <div>
       {/* Banner */}
-      <section className="gradient-hero pt-32 pb-20 text-white relative overflow-hidden">
+      <section className="gradient-hero pt-24 pb-8 md:pt-32 md:pb-20 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 right-10 w-48 h-48 bg-white rounded-full blur-3xl" />
         </div>
@@ -57,32 +83,32 @@ export default function Testimonials() {
       </section>
 
       {/* Rating Summary */}
-      <section className="bg-white py-12">
+      <section className="bg-white py-8 md:py-12">
         <div className="max-w-4xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-background rounded-2xl p-8 flex flex-col md:flex-row items-center justify-center gap-8 border border-slate-100"
+            className="bg-background rounded-2xl p-4 sm:p-6 md:p-8 flex flex-row items-center justify-around md:justify-center gap-2 sm:gap-4 md:gap-8 border border-slate-100 shadow-sm"
           >
-            <div className="text-center">
-              <p className="text-5xl font-heading font-bold text-primary">{avgRating}</p>
-              <div className="flex items-center gap-1 mt-2 justify-center">
+            <div className="text-center flex-1 md:flex-initial">
+              <p className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-primary">{avgRating}</p>
+              <div className="flex items-center gap-0.5 sm:gap-1 mt-1 sm:mt-2 justify-center">
                 {[1, 2, 3, 4, 5].map(star => (
-                  <FaStar key={star} className={star <= Math.round(Number(avgRating)) ? 'text-amber-400' : 'text-slate-200'} />
+                  <FaStar key={star} className={`text-xs sm:text-sm ${star <= Math.round(Number(avgRating)) ? 'text-amber-400' : 'text-slate-200'}`} />
                 ))}
               </div>
-              <p className="text-text-secondary text-sm mt-1">Average Rating</p>
+              <p className="text-[11px] sm:text-xs md:text-sm text-text-secondary mt-1 whitespace-nowrap">Average Rating</p>
             </div>
-            <div className="h-16 w-px bg-slate-200 hidden md:block" />
-            <div className="text-center">
-              <p className="text-5xl font-heading font-bold text-primary">{testimonials.length}</p>
-              <p className="text-text-secondary text-sm mt-2">Total Reviews</p>
+            <div className="h-10 md:h-16 w-px bg-slate-200" />
+            <div className="text-center flex-1 md:flex-initial">
+              <p className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-primary">{testimonials.length}</p>
+              <p className="text-[11px] sm:text-xs md:text-sm text-text-secondary mt-1 sm:mt-2 whitespace-nowrap">Total Reviews</p>
             </div>
-            <div className="h-16 w-px bg-slate-200 hidden md:block" />
-            <div className="text-center">
-              <p className="text-5xl font-heading font-bold text-primary">100%</p>
-              <p className="text-text-secondary text-sm mt-2">Patient Satisfaction</p>
+            <div className="h-10 md:h-16 w-px bg-slate-200" />
+            <div className="text-center flex-1 md:flex-initial">
+              <p className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-primary">100%</p>
+              <p className="text-[11px] sm:text-xs md:text-sm text-text-secondary mt-1 sm:mt-2 whitespace-nowrap">Patient Satisfaction</p>
             </div>
           </motion.div>
         </div>
@@ -90,7 +116,7 @@ export default function Testimonials() {
 
       {/* Testimonials */}
       <section className="section-padding bg-background">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <SectionHeading
             title="What Our Patients Say"
             subtitle="Real experiences from real patients who trust CareFirst Hospital"
@@ -101,11 +127,28 @@ export default function Testimonials() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-              {testimonials.map(testimonial => (
-                <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+              {visibleTestimonials.map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.id || index}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <TestimonialCard testimonial={testimonial} />
+                </motion.div>
               ))}
               {testimonials.length === 0 && (
                 <div className="col-span-full text-center py-8 text-slate-500">No testimonials available.</div>
+              )}
+              {visibleCount < testimonials.length && (
+                <div className="col-span-full text-center mt-6">
+                  <button
+                    onClick={handleViewMore}
+                    className="bg-white border-2 border-primary text-primary font-semibold px-8 py-3 rounded-full hover:bg-primary hover:text-white transition-all duration-300 shadow-md text-sm cursor-pointer"
+                  >
+                    View More
+                  </button>
+                </div>
               )}
             </div>
           )}

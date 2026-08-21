@@ -28,8 +28,14 @@ const BlogCard = ({ blog }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group border border-slate-100"
+      className="relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group border border-slate-100"
     >
+      {/* Mobile-only full card click overlay */}
+      <Link
+        to={`/blog/${id}`}
+        className="absolute inset-0 z-10 md:hidden"
+        aria-label={title}
+      />
       {/* Cover image or gradient fallback */}
       <div className={`h-48 relative ${!blog.image ? `bg-gradient-to-br ${gradient}` : ''} flex items-center justify-center overflow-hidden`}>
         {blog.image ? (

@@ -368,6 +368,48 @@ export const testimonials = [
     review: 'The newborn care at CareFirst is exceptional. Dr. Patel guided us through every step of our newborn\'s health journey. The entire team is supportive and professional.',
     role: 'Parent',
   },
+  {
+    id: 5,
+    name: 'Meera Joshi',
+    rating: 5,
+    review: 'The emergency response team was incredibly quick and efficient when my father needed urgent cardiac care. Deeply grateful for their prompt care.',
+    role: 'Family Member',
+  },
+  {
+    id: 6,
+    name: 'Rajesh Sharma',
+    rating: 5,
+    review: 'Extremely clean environment, modern infrastructure, and super empathetic nurses. Best healthcare facility in the city.',
+    role: 'Patient',
+  },
+  {
+    id: 7,
+    name: 'Ananya Iyer',
+    rating: 5,
+    review: 'Dr. Patel guided me throughout my maternity journey. The delivery went smoothly and the post-natal care was exceptional.',
+    role: 'Patient',
+  },
+  {
+    id: 8,
+    name: 'Amit Verma',
+    rating: 4,
+    review: 'Prompt diagnostic services and accurate report delivery. Online appointment booking made our visits completely hassle-free.',
+    role: 'Patient',
+  },
+  {
+    id: 9,
+    name: 'Pooja Nair',
+    rating: 5,
+    review: 'State-of-the-art cardiology department and very compassionate doctors. I felt completely safe under their care.',
+    role: 'Patient',
+  },
+  {
+    id: 10,
+    name: 'Suresh Patil',
+    rating: 5,
+    review: 'Minimal wait times and highly professional staff. CareFirst Hospital lives up to its reputation for excellence.',
+    role: 'Patient',
+  },
 ];
 
 export const timeSlots = [
